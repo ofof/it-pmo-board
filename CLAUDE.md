@@ -23,5 +23,6 @@ State-driven rendering: `state = { tasks, filters }` is the source of truth, wit
 
 - Every user-supplied string must go through `escapeHtml()` before it enters an HTML template string.
 - Board interactions (delete buttons, "Move ▸" select, drag and drop) use event delegation on `#board`, wired once in `wireBoardEvents()`. Don't attach per-card listeners, since cards are recreated on every render.
+- Tasks carry `points`, `createdAt` and `completedAt` (set in `addTask`/`moveTask`). `renderInsights()` (called from `renderBoard()`) draws the progress bars and the SVG burndown from those dates; the chart follows the active filters and the Points/Tasks toggle (`ui.chartUnit`). Hover/keyboard day read-out re-renders only the chart (`renderChart()`).
 - Task IDs come from `generateTaskId()` (`ITPM-####`, counter `nextIdNumber`); seed due dates are relative to today so overdue badges always demo correctly.
 - Submit is optimistic: the card is added first, then `notifyNewTask()` runs; a failure only shows a warning toast.

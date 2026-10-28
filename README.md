@@ -10,6 +10,9 @@ A single-page Kanban board for a fictitious bank's internal IT PMO. It is a demo
 - Inline "Delete? Yes / No" confirmation (no browser dialogs).
 - Add Task form with client-side validation and a toast on success.
 - Filters by project, assignee and priority, and a live summary strip.
+- Progress panel: a stacked overall completion bar plus a bar per project; click a project to filter the board and chart.
+- Burndown chart (inline SVG) with an ideal line, remaining work, a Today marker and scope changes. Hover it or use the arrow keys to read a day; switch between story points and task count.
+- Each task has an effort estimate in story points; click a card for its details.
 - Optional email notification for new tasks through [FormSubmit](https://formsubmit.co).
 
 Live demo: https://ofof.github.io/it-pmo-board/
@@ -20,7 +23,7 @@ Open `index.html` in a browser. No server is needed.
 
 ## Data
 
-Board state lives in memory only. Refreshing the page resets it to the 8 seeded demo tasks.
+Board state lives in memory only. Refreshing the page resets it to the 13 seeded demo tasks (with completion dates, so the burndown has history).
 
 ## Email notifications
 

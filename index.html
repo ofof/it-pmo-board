@@ -228,6 +228,85 @@
   }
   .confirm .confirm-yes { background: var(--red); border-color: var(--red); color: #fff; }
 
+  /* ===== Insights: progress and burndown ===== */
+  .insights {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--s4);
+    padding: var(--s5) var(--s5) 0;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--s4);
+    min-width: 0;
+  }
+  .panel h2 { margin: 0; font-size: 15px; color: var(--blue-900); }
+  .panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2); margin-bottom: var(--s3); }
+  .seg-group { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg-group button { border: none; background: #fff; padding: var(--s1) var(--s3); cursor: pointer; font-size: 12px; }
+  .seg-group button[aria-pressed="true"] { background: var(--blue-700); color: #fff; font-weight: 600; }
+  .keys { display: flex; flex-wrap: wrap; gap: var(--s4); font-size: 12px; color: var(--muted); margin: 0 0 var(--s2); padding: 0; list-style: none; }
+  .keys li { display: flex; align-items: center; gap: var(--s2); }
+  .key-line { display: inline-block; width: 22px; border-top: 3px solid var(--blue-600); }
+  .key-line.ideal { border-top: 2px dashed var(--grey); }
+  .chart { outline-offset: 4px; }
+  .chart-svg { width: 100%; height: auto; display: block; }
+  .chart-svg text { fill: var(--muted); font-size: 11px; font-family: var(--font); }
+  .chart-svg .grid { stroke: var(--line); stroke-width: 1; }
+  .chart-svg .axis { stroke: var(--grey); stroke-width: 1; }
+  .chart-svg .ideal { fill: none; stroke: var(--grey); stroke-width: 2; stroke-dasharray: 6 4; }
+  .chart-svg .actual { fill: none; stroke: var(--blue-600); stroke-width: 3; stroke-linejoin: round; }
+  .chart-svg .today { stroke: var(--amber); stroke-width: 1.5; stroke-dasharray: 3 3; }
+  .chart-svg .today-label { fill: #8a5300; font-weight: 600; }
+  .chart-svg .guide { stroke: var(--blue-900); stroke-width: 1; }
+  .chart-svg .dot-actual { fill: var(--blue-600); stroke: #fff; stroke-width: 2; }
+  .chart-svg .dot-ideal { fill: #fff; stroke: var(--grey); stroke-width: 2; }
+  .chart-svg .tip { fill: var(--blue-900); }
+  .chart-svg .tip-text { fill: #fff; font-size: 12px; }
+  .chart-note { margin: var(--s2) 0 0; font-size: 12px; color: var(--muted); }
+
+  .overall-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); margin-bottom: var(--s2); }
+  .overall-head strong { font-size: 28px; color: var(--blue-900); line-height: 1; }
+  .overall-head span { color: var(--muted); font-size: 12px; }
+  .bar { display: flex; height: 12px; background: var(--blue-100); border-radius: 999px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; }
+  .bar .fill { background: var(--green); }
+  .seg-0 { background: var(--grey); }
+  .seg-1 { background: var(--blue); }
+  .seg-2 { background: var(--amber); }
+  .seg-3 { background: var(--green); }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0 var(--s4); padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
+  .legend li { display: flex; align-items: center; gap: var(--s1); }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .proj-list { display: grid; gap: var(--s2); }
+  .proj-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s1) var(--s2);
+    text-align: left;
+    background: var(--blue-50);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: var(--s2) var(--s3);
+    cursor: pointer;
+  }
+  .proj-row:hover { border-color: var(--line); }
+  .proj-row[aria-pressed="true"] { border-color: var(--blue-600); background: var(--blue-100); }
+  .proj-name { font-size: 13px; font-weight: 600; }
+  .proj-val { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .proj-row .bar { grid-column: 1 / -1; height: 8px; }
+  .hint-line { font-size: 12px; color: var(--muted); margin: var(--s3) 0 0; }
+
+  .card-title [role="button"] { cursor: pointer; }
+  .card-title [role="button"]:hover { text-decoration: underline; }
+  .detail { padding: var(--s5); }
+  .detail-desc { margin: 0 0 var(--s4); overflow-wrap: anywhere; }
+  .detail-grid { display: grid; grid-template-columns: auto 1fr; gap: var(--s2) var(--s4); margin: 0; }
+  .detail-grid dt { color: var(--muted); }
+  .detail-grid dd { margin: 0; font-weight: 600; }
+
   /* ===== Modal ===== */
   dialog {
     border: none;
@@ -283,6 +362,7 @@
     .column { width: 100%; flex: none; }
     .form-row { grid-template-columns: 1fr; }
     .summary { margin-left: 0; }
+    .insights { grid-template-columns: 1fr; padding: var(--s4) var(--s4) 0; }
     .app-header, .filters { padding-left: var(--s3); padding-right: var(--s3); }
   }
 </style>
@@ -312,6 +392,31 @@
     <select id="fPriority"></select>
   </div>
   <button type="button" class="btn btn-secondary" id="clearFilters">Clear filters</button>
+</section>
+
+<!-- ===== Insights: burndown chart and progress bars (both follow the unit toggle) ===== -->
+<section class="insights" aria-label="Progress and burndown">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Burndown</h2>
+      <div class="seg-group" role="group" aria-label="Measure by">
+        <button type="button" data-unit="points" aria-pressed="true">Points</button>
+        <button type="button" data-unit="tasks" aria-pressed="false">Tasks</button>
+      </div>
+    </div>
+    <ul class="keys" aria-label="Chart key">
+      <li><span class="key-line ideal"></span>Ideal</li>
+      <li><span class="key-line"></span>Actual remaining</li>
+    </ul>
+    <div class="chart" id="chart" tabindex="0" role="group" aria-label="Burndown chart. Use left and right arrow keys to read each day."></div>
+    <p class="chart-note" id="chartNote" aria-live="polite"></p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Progress</h2></div>
+    <div id="overall"></div>
+    <div class="proj-list" id="projectProgress"></div>
+    <p class="hint-line">Select a project to filter the board and chart.</p>
+  </div>
 </section>
 
 <!-- ===== Kanban board: columns are rendered from state ===== -->
@@ -370,11 +475,27 @@
         <p class="error" id="err-status" role="alert"></p>
       </div>
     </div>
+    <div class="form-row">
+      <div class="field">
+        <label for="points">Effort <span class="hint">(story points)</span></label>
+        <select id="points" name="points"></select>
+        <p class="error" id="err-points" role="alert"></p>
+      </div>
+    </div>
     <div class="form-actions">
       <button type="button" class="btn btn-secondary" id="cancelAdd">Cancel</button>
       <button type="submit" class="btn btn-primary" id="submitBtn">Add Task</button>
     </div>
   </form>
+</dialog>
+
+<!-- ===== Task details modal (opened by clicking a card) ===== -->
+<dialog id="detailDialog" aria-labelledby="detailTitle">
+  <div class="modal-head">
+    <h2 id="detailTitle">Task details</h2>
+    <button type="button" class="icon-btn" id="closeDetail" aria-label="Close task details">&times;</button>
+  </div>
+  <div class="detail" id="detailBody"></div>
 </dialog>
 
 <!-- ===== Toast region (announced politely to screen readers) ===== -->
@@ -403,13 +524,16 @@ const STATUSES = [
 const PROJECTS = ["Core Banking Upgrade", "Digital Channels", "Cybersecurity Uplift", "Data & Analytics", "Infrastructure & Cloud", "Vendor Management"];
 const CATEGORIES = ["Application Development", "Infrastructure", "Cybersecurity", "Data", "Compliance", "Vendor"];
 const PRIORITIES = ["Critical", "High", "Medium", "Low"];
+const POINTS = [1, 2, 3, 5, 8, 13];
+// Burndown window: days shown before and after today.
+const SPRINT = { before: 14, after: 14 };
 
 /* ======================================================================
    STATE: single source of truth. In memory only, no storage APIs.
    `ui` holds transient view state (which card is asking "Delete?").
    ====================================================================== */
 const state = { tasks: [], filters: { project: "", assignee: "", priority: "" } };
-const ui = { confirmDeleteId: null, draggingId: null };
+const ui = { confirmDeleteId: null, draggingId: null, chartUnit: "points", hoverDay: null };
 let nextIdNumber = 1;
 
 /* ======================================================================
@@ -465,18 +589,25 @@ function fillSelect(select, options, selected, placeholder) {
    SEED DATA (demo tasks, spread across the four columns)
    ====================================================================== */
 function seedTasks() {
+  // [title, description, project, category, assignee, priority, due offset, status, points, created offset, completed offset]
   const seeds = [
-    ["Migrate FX pricing service to AWS", "Lift and shift the FX pricing engine, including rate feeds.", "Infrastructure & Cloud", "Infrastructure", "Priya Nair", "High", 21, "Backlog"],
-    ["Define data lineage for regulatory reports", "Document source-to-report lineage for quarterly submissions.", "Data & Analytics", "Compliance", "Daniel Lim", "Medium", 35, "Backlog"],
-    ["Patch CVE-2025-XXXX on branch teller VDI", "Roll out the vendor patch to teller virtual desktops in waves.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "Critical", 3, "In Progress"],
-    ["Build account-opening API gateway routes", "Expose onboarding services via the API gateway.", "Digital Channels", "Application Development", "Aisha Rahman", "High", 12, "In Progress"],
-    ["UAT sign-off for mobile onboarding release 4.2", "Collect business sign-off and defect closure evidence.", "Digital Channels", "Application Development", "Grace Wong", "High", -2, "In Progress"],
-    ["Core ledger vendor licence renewal", "Waiting on procurement approval for the renewal quote.", "Vendor Management", "Vendor", "Hui Min Chua", "Medium", -5, "Blocked"],
-    ["Firewall rule recertification", "Awaiting network team capacity to review stale rules.", "Cybersecurity Uplift", "Cybersecurity", "Ravi Menon", "Low", 9, "Blocked"],
-    ["Decommission legacy batch scheduler", "Cutover completed and old scheduler switched off.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "Medium", -10, "Done"]
+    ["Migrate FX pricing service to AWS", "Lift and shift the FX pricing engine, including rate feeds.", "Infrastructure & Cloud", "Infrastructure", "Priya Nair", "High", 21, "Backlog", 13, -14, null],
+    ["Define data lineage for regulatory reports", "Document source-to-report lineage for quarterly submissions.", "Data & Analytics", "Compliance", "Daniel Lim", "Medium", 25, "Backlog", 8, -14, null],
+    ["Vendor risk assessment for card processor", "Annual third-party risk review added mid-sprint.", "Vendor Management", "Compliance", "Hui Min Chua", "Medium", 15, "Backlog", 5, -7, null],
+    ["Patch CVE-2025-XXXX on branch teller VDI", "Roll out the vendor patch to teller virtual desktops in waves.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "Critical", 3, "In Progress", 5, -14, null],
+    ["Build account-opening API gateway routes", "Expose onboarding services via the API gateway.", "Digital Channels", "Application Development", "Aisha Rahman", "High", 12, "In Progress", 8, -14, null],
+    ["UAT sign-off for mobile onboarding release 4.2", "Collect business sign-off and defect closure evidence.", "Digital Channels", "Application Development", "Grace Wong", "High", -2, "In Progress", 5, -14, null],
+    ["Automate regression pack for release 4.2", "Convert the manual regression checklist to scripted tests.", "Digital Channels", "Application Development", "Grace Wong", "Medium", 6, "In Progress", 5, -5, null],
+    ["Core ledger vendor licence renewal", "Waiting on procurement approval for the renewal quote.", "Vendor Management", "Vendor", "Hui Min Chua", "Medium", -5, "Blocked", 3, -14, null],
+    ["Firewall rule recertification", "Awaiting network team capacity to review stale rules.", "Cybersecurity Uplift", "Cybersecurity", "Ravi Menon", "Low", 9, "Blocked", 3, -14, null],
+    ["Decommission legacy batch scheduler", "Cutover completed and old scheduler switched off.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "Medium", -10, "Done", 5, -14, -9],
+    ["Upgrade core ledger test environment", "Refresh the SIT environment to the target release.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "High", -8, "Done", 8, -14, -6],
+    ["Penetration test remediation, phase 1", "Close high and critical findings from the external test.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "High", -3, "Done", 5, -14, -3],
+    ["Publish consent data dictionary", "Agreed definitions for customer consent attributes.", "Data & Analytics", "Data", "Daniel Lim", "Low", -1, "Done", 2, -10, -1]
   ];
-  state.tasks = seeds.map(([title, description, project, category, assignee, priority, dueOffset, status]) => ({
-    id: generateTaskId(), title, description, project, category, assignee, priority, dueDate: daysFromToday(dueOffset), status
+  state.tasks = seeds.map(([title, description, project, category, assignee, priority, dueOffset, status, points, createdOffset, doneOffset]) => ({
+    id: generateTaskId(), title, description, project, category, assignee, priority, dueDate: daysFromToday(dueOffset), status, points,
+    createdAt: daysFromToday(createdOffset), completedAt: doneOffset === null ? null : daysFromToday(doneOffset)
   }));
 }
 
@@ -517,7 +648,7 @@ function renderCard(task) {
         <span class="card-id">${escapeHtml(task.id)}</span>
         <button type="button" class="icon-btn" data-action="delete-ask" data-id="${escapeHtml(task.id)}" aria-label="Delete task ${escapeHtml(task.id)}">&times;</button>
       </div>
-      <h3 class="card-title">${escapeHtml(task.title)}</h3>
+      <h3 class="card-title"><span role="button" tabindex="0" data-action="details" data-id="${escapeHtml(task.id)}">${escapeHtml(task.title)}</span></h3>
       <dl class="card-meta">
         <dt>Project</dt><dd>&#128193; ${escapeHtml(task.project)}</dd>
         <dt>Assignee</dt><dd>&#128100; ${escapeHtml(task.assignee)}</dd>
@@ -526,6 +657,7 @@ function renderCard(task) {
       <div class="card-row">
         <span class="pill pill-${escapeHtml(task.priority)}">${escapeHtml(task.priority)}</span>
         <span class="tag">${escapeHtml(task.category)}</span>
+        <span class="tag">${task.points} pts</span>
         ${overdue ? '<span class="badge-overdue">Overdue</span>' : ""}
       </div>
       <div class="card-actions">${actions}</div>
@@ -538,6 +670,9 @@ function renderSummary() {
   STATUSES.forEach((s) => {
     parts.push(`<li>${escapeHtml(s.name)}<strong>${all.filter((t) => t.status === s.name).length}</strong></li>`);
   });
+  const totalPts = all.reduce((n, t) => n + t.points, 0);
+  const donePts = all.filter((t) => t.status === "Done").reduce((n, t) => n + t.points, 0);
+  parts.push(`<li>Progress<strong>${totalPts ? Math.round((donePts / totalPts) * 100) : 0}%</strong></li>`);
   parts.push(`<li class="summary-overdue">Overdue<strong>${all.filter(isOverdue).length}</strong></li>`);
   $("summary").innerHTML = parts.join("");
 }
@@ -552,18 +687,19 @@ function renderBoard() {
           <h2>${escapeHtml(s.name)}</h2>
           <span class="count" aria-label="${cards.length} tasks">${cards.length}</span>
         </div>
-        <p class="column-sub">${escapeHtml(s.note)}</p>
+        <p class="column-sub">${escapeHtml(s.note)} &middot; ${cards.reduce((n, t) => n + t.points, 0)} pts</p>
         <div class="cards">${cards.length ? cards.map(renderCard).join("") : '<p class="empty">No tasks</p>'}</div>
       </section>`;
   }).join("");
   renderSummary();
+  renderInsights();
 }
 
 /* ======================================================================
    ACTIONS (mutate state, then re-render)
    ====================================================================== */
 function addTask(data) {
-  const task = { id: generateTaskId(), ...data };
+  const task = { id: generateTaskId(), ...data, createdAt: todayString(), completedAt: data.status === "Done" ? todayString() : null };
   state.tasks.push(task);
   renderBoard();
   return task;
@@ -573,6 +709,7 @@ function moveTask(id, status) {
   const task = state.tasks.find((t) => t.id === id);
   if (!task || !STATUSES.some((s) => s.name === status) || task.status === status) return;
   task.status = status;
+  task.completedAt = status === "Done" ? todayString() : null;
   renderBoard();
 }
 
@@ -613,6 +750,7 @@ async function notifyNewTask(task) {
       Priority: task.priority,
       "Due Date": task.dueDate,
       Status: task.status,
+      "Effort (points)": task.points,
       "Submitted At": new Date().toISOString()
     })
   });
@@ -623,7 +761,7 @@ async function notifyNewTask(task) {
 /* ======================================================================
    FORM: validation and submit
    ====================================================================== */
-const FIELDS = ["title", "description", "project", "category", "assignee", "priority", "dueDate", "status"];
+const FIELDS = ["title", "description", "project", "category", "assignee", "priority", "dueDate", "points", "status"];
 
 function readForm() {
   const v = (id) => $(id).value;
@@ -635,6 +773,7 @@ function readForm() {
     assignee: v("assignee").trim(),
     priority: v("priority"),
     dueDate: v("dueDate"),
+    points: Number(v("points")),
     status: v("status")
   };
 }
@@ -650,6 +789,7 @@ function validate(data) {
   if (!PRIORITIES.includes(data.priority)) errors.priority = "Choose a priority.";
   if (!data.dueDate) errors.dueDate = "Due date is required.";
   else if (data.dueDate < todayString()) errors.dueDate = "Due date cannot be in the past.";
+  if (!POINTS.includes(data.points)) errors.points = "Choose an effort estimate.";
   if (!STATUSES.some((s) => s.name === data.status)) errors.status = "Choose a status.";
   return errors;
 }
@@ -666,6 +806,7 @@ function showErrors(errors) {
 function resetForm() {
   $("taskForm").reset();
   fillSelect($("priority"), PRIORITIES, "Medium");
+  fillSelect($("points"), POINTS, 3);
   fillSelect($("status"), STATUSES.map((s) => s.name), "Backlog");
   showErrors({});
 }
@@ -707,8 +848,14 @@ function wireBoardEvents() {
   // Card buttons and the keyboard-accessible Move control (event delegation).
   board.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-action]");
-    if (!btn || btn.tagName === "SELECT") return;
+    if (!btn) {
+      const card = e.target.closest(".card");
+      if (card && !e.target.closest(".confirm")) openDetails(card.dataset.id);
+      return;
+    }
+    if (btn.tagName === "SELECT") return;
     const id = btn.dataset.id;
+    if (btn.dataset.action === "details") return openDetails(id);
     if (btn.dataset.action === "delete-ask") ui.confirmDeleteId = id;
     else if (btn.dataset.action === "delete-no") ui.confirmDeleteId = null;
     else if (btn.dataset.action === "delete-yes") return deleteTask(id);
@@ -785,6 +932,193 @@ function wireFormEvents() {
 }
 
 /* ======================================================================
+   INSIGHTS: progress bars and burndown chart (follow the unit toggle)
+   ====================================================================== */
+const unitLabel = () => (ui.chartUnit === "tasks" ? "tasks" : "pts");
+const weightOf = (task) => (ui.chartUnit === "tasks" ? 1 : task.points);
+const sumWeight = (tasks) => tasks.reduce((n, t) => n + weightOf(t), 0);
+const round1 = (n) => Math.round(n * 10) / 10;
+
+function formatShort(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+function filtersActive() {
+  const f = state.filters;
+  return Boolean(f.project || f.priority || f.assignee.trim());
+}
+
+// One row per day of the window: ideal line, and remaining work up to today.
+function burndownSeries(tasks) {
+  const days = [];
+  for (let i = -SPRINT.before; i <= SPRINT.after; i++) days.push(daysFromToday(i));
+  const today = todayString();
+  const startScope = sumWeight(tasks.filter((t) => t.createdAt <= days[0]));
+  return days.map((date, i) => {
+    const scope = sumWeight(tasks.filter((t) => t.createdAt <= date));
+    const done = sumWeight(tasks.filter((t) => t.completedAt && t.completedAt <= date));
+    return {
+      date,
+      scope,
+      ideal: startScope * (1 - i / (days.length - 1)),
+      remaining: date <= today ? scope - done : null
+    };
+  });
+}
+
+function renderChart() {
+  const series = burndownSeries(applyFilters(state.tasks));
+  const W = 640, H = 280, L = 44, R = 16, T = 16, B = 34;
+  const pw = W - L - R, ph = H - T - B, last = series.length - 1;
+  const maxVal = Math.max(1, ...series.map((p) => Math.max(p.ideal, p.remaining ?? 0)));
+  const step = [1, 2, 5, 10, 20, 50, 100].find((s) => maxVal / s <= 5) || 200;
+  const yMax = Math.ceil(maxVal / step) * step;
+  const x = (i) => L + (pw * i) / last;
+  const y = (v) => T + ph * (1 - v / yMax);
+  const todayIdx = SPRINT.before;
+
+  let svg = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Burndown chart in ${unitLabel()}">`;
+  for (let v = 0; v <= yMax; v += step) {
+    svg += `<line class="${v === 0 ? "axis" : "grid"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
+    svg += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  [0, 7, 14, 21, 28].filter((i) => i <= last).forEach((i) => {
+    svg += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle">${escapeHtml(formatShort(series[i].date))}</text>`;
+  });
+  svg += `<line class="today" x1="${x(todayIdx)}" x2="${x(todayIdx)}" y1="${T}" y2="${T + ph}"/>`;
+  svg += `<text class="today-label" x="${x(todayIdx) + 4}" y="${T + 10}">Today</text>`;
+  svg += `<polyline class="ideal" points="${series.map((p, i) => `${x(i)},${y(p.ideal)}`).join(" ")}"/>`;
+  svg += `<polyline class="actual" points="${series.filter((p) => p.remaining !== null).map((p) => `${x(series.indexOf(p))},${y(p.remaining)}`).join(" ")}"/>`;
+
+  // Hover / keyboard read-out for one day.
+  const h = ui.hoverDay;
+  if (h !== null) {
+    const p = series[h];
+    svg += `<line class="guide" x1="${x(h)}" x2="${x(h)}" y1="${T}" y2="${T + ph}"/>`;
+    svg += `<circle class="dot-ideal" cx="${x(h)}" cy="${y(p.ideal)}" r="5"/>`;
+    if (p.remaining !== null) svg += `<circle class="dot-actual" cx="${x(h)}" cy="${y(p.remaining)}" r="5"/>`;
+    const tipW = 140, tipH = 58;
+    const tipX = x(h) > W / 2 ? x(h) - tipW - 10 : x(h) + 10;
+    svg += `<rect class="tip" x="${tipX}" y="${T + 4}" width="${tipW}" height="${tipH}" rx="6"/>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 22}" font-weight="700">${escapeHtml(formatShort(p.date))}</text>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 38}">Ideal: ${round1(p.ideal)} ${unitLabel()}</text>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 54}">${p.remaining === null ? "Actual: not yet" : `Actual: ${p.remaining} ${unitLabel()}`}</text>`;
+  }
+  svg += `<rect class="hit" x="${L}" y="${T}" width="${pw}" height="${ph}" fill="transparent"/></svg>`;
+  $("chart").innerHTML = svg;
+
+  const now = series[todayIdx];
+  const diff = round1(now.ideal - now.remaining);
+  const verdict = diff >= 0 ? `${diff} ${unitLabel()} ahead of the ideal line` : `${-diff} ${unitLabel()} behind the ideal line`;
+  $("chartNote").textContent = `Today: ${now.remaining} ${unitLabel()} remaining of ${now.scope} in scope, ${verdict}.` +
+    (filtersActive() ? " The chart follows the active filters." : "");
+}
+
+function renderProgress() {
+  const all = state.tasks;
+  const total = sumWeight(all);
+  const byStatus = STATUSES.map((s) => sumWeight(all.filter((t) => t.status === s.name)));
+  const done = byStatus[STATUSES.length - 1];
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const segments = byStatus.map((v, i) => `<span class="seg-${i}" style="width:${total ? (v / total) * 100 : 0}%" title="${escapeHtml(STATUSES[i].name)}: ${v} ${unitLabel()}"></span>`).join("");
+  const legend = STATUSES.map((s, i) => `<li><span class="swatch seg-${i}"></span>${escapeHtml(s.name)} ${byStatus[i]}</li>`).join("");
+  $("overall").innerHTML = `
+    <div class="overall-head"><strong>${pct}%</strong><span>complete &middot; ${done} of ${total} ${unitLabel()} done</span></div>
+    <div class="bar" role="progressbar" aria-label="Overall completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${segments}</div>
+    <ul class="legend">${legend}</ul>`;
+
+  $("projectProgress").innerHTML = PROJECTS.map((p) => {
+    const tasks = all.filter((t) => t.project === p);
+    const t = sumWeight(tasks);
+    const d = sumWeight(tasks.filter((x) => x.status === "Done"));
+    const pr = t ? Math.round((d / t) * 100) : 0;
+    const active = state.filters.project === p;
+    return `<button type="button" class="proj-row" data-project="${escapeHtml(p)}" aria-pressed="${active}">
+      <span class="proj-name">${escapeHtml(p)}</span>
+      <span class="proj-val">${d}/${t} ${unitLabel()} &middot; ${pr}%</span>
+      <span class="bar"><span class="fill" style="width:${pr}%"></span></span>
+    </button>`;
+  }).join("");
+}
+
+function renderInsights() {
+  document.querySelectorAll("[data-unit]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.unit === ui.chartUnit)));
+  renderProgress();
+  renderChart();
+}
+
+/* ======================================================================
+   TASK DETAILS (opened from a card)
+   ====================================================================== */
+function openDetails(id) {
+  const t = state.tasks.find((x) => x.id === id);
+  if (!t) return;
+  $("detailTitle").textContent = `${t.id}: ${t.title}`;
+  const rows = [
+    ["Project", t.project], ["Category", t.category], ["Assignee", t.assignee], ["Priority", t.priority],
+    ["Status", t.status], ["Effort", `${t.points} pts`],
+    ["Due", formatDate(t.dueDate) + (isOverdue(t) ? " (overdue)" : "")],
+    ["Created", formatDate(t.createdAt)], ["Completed", t.completedAt ? formatDate(t.completedAt) : "Not yet"]
+  ];
+  $("detailBody").innerHTML =
+    `<p class="detail-desc">${t.description ? escapeHtml(t.description) : "<em>No description.</em>"}</p>` +
+    `<dl class="detail-grid">${rows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join("")}</dl>`;
+  $("detailDialog").showModal();
+}
+
+function wireInsightEvents() {
+  // Points / Tasks toggle.
+  document.querySelectorAll("[data-unit]").forEach((b) => b.addEventListener("click", () => {
+    ui.chartUnit = b.dataset.unit;
+    renderInsights();
+  }));
+
+  // Project bars filter the board (reuses the Project filter control).
+  $("projectProgress").addEventListener("click", (e) => {
+    const row = e.target.closest("[data-project]");
+    if (!row) return;
+    const select = $("fProject");
+    select.value = state.filters.project === row.dataset.project ? "" : row.dataset.project;
+    select.dispatchEvent(new Event("change"));
+  });
+
+  // Chart read-out: mouse position or arrow keys pick a day.
+  const chart = $("chart");
+  const setDay = (i) => {
+    if (i !== ui.hoverDay) { ui.hoverDay = i; renderChart(); }
+  };
+  chart.addEventListener("mousemove", (e) => {
+    const svg = chart.querySelector("svg");
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const vx = ((e.clientX - rect.left) * 640) / rect.width;
+    const n = SPRINT.before + SPRINT.after;
+    setDay(Math.max(0, Math.min(n, Math.round(((vx - 44) / (640 - 44 - 16)) * n))));
+  });
+  chart.addEventListener("mouseleave", () => setDay(null));
+  chart.addEventListener("keydown", (e) => {
+    const n = SPRINT.before + SPRINT.after;
+    const cur = ui.hoverDay === null ? SPRINT.before : ui.hoverDay;
+    if (e.key === "ArrowLeft") setDay(Math.max(0, cur - 1));
+    else if (e.key === "ArrowRight") setDay(Math.min(n, cur + 1));
+    else if (e.key === "Home") setDay(0);
+    else if (e.key === "End") setDay(n);
+    else if (e.key === "Escape") setDay(null);
+    else return;
+    e.preventDefault();
+  });
+  chart.addEventListener("blur", () => setDay(null));
+
+  // Card titles are keyboard-operable buttons.
+  $("board").addEventListener("keydown", (e) => {
+    const el = e.target.closest('[data-action="details"]');
+    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openDetails(el.dataset.id); }
+  });
+  $("closeDetail").addEventListener("click", () => $("detailDialog").close());
+}
+
+/* ======================================================================
    INIT
    ====================================================================== */
 function init() {
@@ -798,6 +1132,7 @@ function init() {
   wireBoardEvents();
   wireFilterEvents();
   wireFormEvents();
+  wireInsightEvents();
 }
 
 init();
