@@ -21,8 +21,9 @@ Open `index.html` directly in a browser (`xdg-open index.html`); no server is ne
 
 State-driven rendering: `state = { tasks, filters }` is the source of truth, with transient view state in a separate `ui` object (`confirmDeleteId`, `draggingId`). All card DOM is produced by `renderBoard()` / `renderCard()`, which rebuild the whole board and the header summary. Actions (`addTask`, `moveTask`, `deleteTask`) mutate state and then call `renderBoard()`; do not edit card DOM directly.
 
+- Tasks carry `startDate`, `dueDate`, `progress`, `points`, `createdAt` and `completedAt`. `renderBoard()` is the single render entry point: it shows either `renderWaterfall()` (Gantt-style rows positioned as percentages of the visible window, `ui.span` 28 or 56 days) or `renderKanban()`, then `renderSummary()` and `renderInsights()` (sidebar progress bars plus the SVG burndown, which follows the active filters and the Points/Tasks toggle). Chart hover only re-renders the chart (`renderChart()`).
 - Every user-supplied string must go through `escapeHtml()` before it enters an HTML template string.
-- Board interactions (delete buttons, "Move ▸" select, drag and drop) use event delegation on `#board`, wired once in `wireBoardEvents()`. Don't attach per-card listeners, since cards are recreated on every render.
-- Tasks carry `points`, `createdAt` and `completedAt` (set in `addTask`/`moveTask`). `renderInsights()` (called from `renderBoard()`) draws the progress bars and the SVG burndown from those dates; the chart follows the active filters and the Points/Tasks toggle (`ui.chartUnit`). Hover/keyboard day read-out re-renders only the chart (`renderChart()`).
-- Task IDs come from `generateTaskId()` (`ITPM-####`, counter `nextIdNumber`); seed due dates are relative to today so overdue badges always demo correctly.
-- Submit is optimistic: the card is added first, then `notifyNewTask()` runs; a failure only shows a warning toast.
+- Interactions use event delegation: clicks, Move menu and keyboard on `#views`, Kanban drag and drop on `#board`, and pointer-drag rescheduling of waterfall bars on `#waterfall`. Don't attach per-element listeners, since the views are recreated on every render. The details dialog edits state live via `moveTask`, `setProgress` and `setDates`.
+- Use selectors like `.board[hidden]` (not `!important`) when a class sets `display` on something toggled with `hidden`.
+- Task IDs come from `generateTaskId()` (`ITPM-####`, counter `nextIdNumber`); seed dates are offsets from today so overdue badges and the burndown always demo correctly.
+- Submit is optimistic: the task is added first, then `notifyNewTask()` runs; a failure only shows a warning toast.

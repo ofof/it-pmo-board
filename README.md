@@ -4,18 +4,13 @@ A single-page Kanban board for a fictitious bank's internal IT PMO. It is a demo
 
 ## Features
 
-- Four columns: Backlog, In Progress, Blocked, Done, each with a live task count.
-- Task cards show ID, title, project, assignee, priority, due date and category, with an Overdue badge for late tasks.
-- Drag and drop between columns, plus a keyboard-accessible "Move" dropdown on each card.
-- Inline "Delete? Yes / No" confirmation (no browser dialogs).
+- Waterfall (Gantt-style) timeline: tasks grouped by project and cascading by start date, with a Today line, status-coloured bars and a progress fill. Switch between a 4-week and 8-week range, and drag a bar sideways to reschedule it.
+- Kanban board view (Backlog, In Progress, Blocked, Done) with native drag and drop and a keyboard-accessible Move menu.
+- Task details dialog: change status, progress and dates; effort is tracked in story points.
 - Add Task form with client-side validation and a toast on success.
-- Filters by project, assignee and priority, and a live summary strip.
-- Progress panel: a stacked overall completion bar plus a bar per project; click a project to filter the board and chart.
-- Burndown chart (inline SVG) with an ideal line, remaining work, a Today marker and scope changes. Hover it or use the arrow keys to read a day; switch between story points and task count.
-- Each task has an effort estimate in story points; click a card for its details.
+- Sidebar with live summary counts, filters (project, assignee, priority) and progress bars; click a project bar to filter.
+- Burndown chart (inline SVG) with an ideal line, remaining work and a Today marker. Hover it or use the arrow keys to read a day; switch between points and task count.
 - Optional email notification for new tasks through [FormSubmit](https://formsubmit.co).
-
-Live demo: https://ofof.github.io/it-pmo-board/
 
 ## Run
 
@@ -23,7 +18,7 @@ Open `index.html` in a browser. No server is needed.
 
 ## Data
 
-Board state lives in memory only. Refreshing the page resets it to the 13 seeded demo tasks (with completion dates, so the burndown has history).
+Board state lives in memory only. Refreshing the page resets it to the 13 seeded demo tasks.
 
 ## Email notifications
 

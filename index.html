@@ -5,26 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IT PMO Board</title>
 <style>
-  /* ===== Design tokens ===== */
+  /* ===== Design tokens: dark slate with a teal accent ===== */
   :root {
-    --blue-900: #0b2545;
-    --blue-700: #134074;
-    --blue-600: #1d5ba6;
-    --blue-100: #e3edf9;
-    --blue-50: #f3f7fc;
-    --ink: #17212f;
-    --muted: #5b6878;
-    --line: #d5dde8;
-    --surface: #ffffff;
-    --page: #eef2f7;
-    --red: #c62828;
-    --red-bg: #fdeaea;
-    --amber: #e08a00;
-    --blue: #1d6fd1;
-    --grey: #8a95a3;
-    --green: #1e7a46;
-    --green-bg: #e4f4ea;
-    --warn-bg: #fff4dd;
+    --bg: #0e1720;
+    --side: #0a121a;
+    --surface: #15222e;
+    --surface-2: #1b2b39;
+    --line: #263847;
+    --ink: #e7eff5;
+    --muted: #8da2b2;
+    --teal: #2dd4bf;
+    --teal-strong: #14b8a6;
+    --teal-ink: #04211d;
+    --amber: #f2b84b;
+    --red: #f07178;
+    --red-bg: #3a1e24;
+    --blue: #5aa9f0;
+    --grey: #7c8fa0;
+    --green: #4cd6a0;
 
     --s1: 4px;
     --s2: 8px;
@@ -33,57 +31,24 @@
     --s5: 24px;
     --s6: 32px;
     --radius: 8px;
+    --label-w: 270px;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color-scheme: dark;
   }
 
   /* ===== Base ===== */
   * { box-sizing: border-box; }
+  [hidden], .seg-group[hidden], .board[hidden] { display: none; }
   body {
     margin: 0;
     font-family: var(--font);
     font-size: 14px;
     line-height: 1.4;
     color: var(--ink);
-    background: var(--page);
+    background: var(--bg);
   }
   button, input, select, textarea { font: inherit; color: inherit; }
-  :focus-visible { outline: 3px solid #f5b400; outline-offset: 2px; }
-
-  /* ===== Header ===== */
-  .app-header {
-    background: var(--blue-900);
-    color: #fff;
-    padding: var(--s3) var(--s5);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--s4);
-  }
-  .wordmark {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin: 0;
-  }
-  .wordmark span { font-weight: 400; opacity: 0.8; }
-  .summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s2);
-    margin: 0 auto 0 var(--s4);
-    padding: 0;
-    list-style: none;
-  }
-  .summary li {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
-    padding: var(--s1) var(--s3);
-    font-size: 12px;
-    white-space: nowrap;
-  }
-  .summary strong { font-size: 14px; margin-left: var(--s1); }
-  .summary .summary-overdue { background: var(--red); }
-  .header-note { font-size: 12px; opacity: 0.8; flex-basis: 100%; margin: 0; }
+  :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
 
   .btn {
     border: 1px solid transparent;
@@ -92,102 +57,135 @@
     cursor: pointer;
     font-weight: 600;
   }
-  .btn-primary { background: var(--blue-600); color: #fff; }
-  .btn-primary:hover { background: var(--blue-700); }
+  .btn-primary { background: var(--teal); color: var(--teal-ink); }
+  .btn-primary:hover { background: #5eead4; }
   .btn-primary[disabled] { opacity: 0.7; cursor: progress; }
-  .btn-secondary { background: var(--surface); border-color: var(--line); color: var(--blue-700); }
-  .btn-secondary:hover { background: var(--blue-50); }
-  .app-header .btn-primary { background: #fff; color: var(--blue-900); }
-  .app-header .btn-primary:hover { background: var(--blue-100); }
+  .btn-secondary { background: transparent; border-color: var(--line); color: var(--ink); }
+  .btn-secondary:hover { background: var(--surface-2); }
 
-  /* ===== Filter bar ===== */
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s4);
-    align-items: flex-end;
-    padding: var(--s3) var(--s5);
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
-  }
-  .filters label { display: block; font-size: 12px; color: var(--muted); margin-bottom: var(--s1); }
-  .filters select, .filters input { min-width: 180px; }
-
-  /* ===== Form controls ===== */
   select, input[type="text"], input[type="date"], textarea {
     width: 100%;
     padding: var(--s2) var(--s3);
     border: 1px solid var(--line);
     border-radius: 6px;
-    background: #fff;
+    background: var(--surface-2);
   }
   textarea { resize: vertical; min-height: 80px; }
   .field-invalid { border-color: var(--red); }
 
-  /* ===== Board ===== */
-  .board {
+  /* ===== App shell: sidebar + main ===== */
+  .app { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--line);
+    padding: var(--s5) var(--s4);
     display: flex;
-    gap: var(--s4);
-    padding: var(--s5);
-    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--s5);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
   }
-  .column {
-    flex: 1 1 0;
-    min-width: 0;
-    background: var(--blue-100);
-    border: 2px solid transparent;
-    border-radius: var(--radius);
-    padding: var(--s3);
-    min-height: 240px;
-  }
-  .column.drop-target {
-    border-color: var(--blue-600);
-    background: #d3e3f6;
-  }
-  .column-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--s3);
-  }
-  .column-header h2 { margin: 0; font-size: 15px; color: var(--blue-900); }
-  .column-sub { font-size: 11px; color: var(--muted); margin: 0 0 var(--s3); }
-  .count {
-    background: var(--blue-700);
-    color: #fff;
-    border-radius: 999px;
-    min-width: 24px;
-    padding: 0 var(--s2);
-    text-align: center;
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .cards { display: flex; flex-direction: column; gap: var(--s3); min-height: 60px; }
-  .empty { color: var(--muted); font-size: 12px; text-align: center; padding: var(--s4) 0; }
+  .wordmark { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
+  .wordmark span { color: var(--teal); }
+  .side-note { margin: var(--s2) 0 0; font-size: 12px; color: var(--muted); }
+  .side h2 { margin: 0 0 var(--s2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 
-  /* ===== Cards ===== */
-  .card {
-    position: relative;
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+  .stats li { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: var(--s2) var(--s3); font-size: 12px; color: var(--muted); }
+  .stats strong { display: block; font-size: 20px; color: var(--ink); line-height: 1.1; }
+  .stats .stat-overdue { border-color: var(--red); }
+  .stats .stat-overdue strong { color: var(--red); }
+
+  .filters { display: grid; gap: var(--s3); }
+  .filters label { display: block; font-size: 12px; color: var(--muted); margin-bottom: var(--s1); }
+
+  .main { padding: var(--s5); display: grid; gap: var(--s4); align-content: start; min-width: 0; }
+
+  /* ===== Top bar: view tabs, range, legend ===== */
+  .topbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s4); }
+  .topbar h2 { margin: 0 var(--s2) 0 0; font-size: 20px; }
+  .seg-group { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg-group button { border: none; background: transparent; padding: var(--s1) var(--s3); cursor: pointer; font-size: 12px; color: var(--muted); }
+  .seg-group button[aria-selected="true"], .seg-group button[aria-pressed="true"] { background: var(--teal); color: var(--teal-ink); font-weight: 700; }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: 0 0 0 auto; padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
+  .legend li { display: flex; align-items: center; gap: var(--s1); }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1px solid transparent; }
+  .sw-backlog { background: #4a6379; border-color: #6f8aa0; }
+  .sw-progress { background: #0d7f75; border-color: var(--teal); }
+  .sw-blocked { background: repeating-linear-gradient(45deg, #8a6212 0 4px, #6b4d10 4px 8px); border-color: var(--amber); }
+  .sw-done { background: #17855c; border-color: var(--green); }
+  .hint { font-size: 12px; color: var(--muted); }
+
+  /* ===== Waterfall (Gantt-style) view ===== */
+  .wf-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .wf { min-width: 760px; }
+  .wf-row { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+  .wf-row:last-child { border-bottom: none; }
+  .wf-label {
+    position: sticky;
+    left: 0;
+    z-index: 2;
     background: var(--surface);
-    border-radius: 6px;
-    border-left: 6px solid var(--grey);
-    padding: var(--s3);
-    box-shadow: 0 1px 2px rgba(11, 37, 69, 0.15);
-    cursor: grab;
+    border-right: 1px solid var(--line);
+    padding: var(--s2) var(--s3);
+    min-width: 0;
   }
-  .card.dragging { opacity: 0.45; }
-  .card[data-priority="Critical"] { border-left-color: var(--red); }
-  .card[data-priority="High"] { border-left-color: var(--amber); }
-  .card[data-priority="Medium"] { border-left-color: var(--blue); }
-  .card[data-priority="Low"] { border-left-color: var(--grey); }
+  .wf-time {
+    position: relative;
+    min-height: 56px;
+    background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+    background-size: calc(100% * 7 / var(--span)) 100%;
+  }
+  .wf-head .wf-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; background: var(--surface-2); }
+  .wf-head .wf-time { min-height: 36px; background-color: var(--surface-2); }
+  .wf-head .wf-time span { position: absolute; top: 10px; transform: translateX(4px); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .wf-group .wf-label { background: var(--surface-2); font-weight: 700; }
+  .wf-group .wf-label small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
+  .wf-group .wf-time { background-color: var(--surface-2); }
+  .wf-summary { position: absolute; top: 20px; height: 10px; border-radius: 2px; background: var(--grey); opacity: 0.8; }
+  .wf-summary::before, .wf-summary::after { content: ""; position: absolute; top: 6px; border: 4px solid transparent; border-top-color: var(--grey); }
+  .wf-summary::before { left: 0; }
+  .wf-summary::after { right: 0; }
+  .wf-task .wf-label { border-left: 4px solid var(--grey); }
+  .wf-task[data-priority="Critical"] .wf-label { border-left-color: var(--red); }
+  .wf-task[data-priority="High"] .wf-label { border-left-color: var(--amber); }
+  .wf-task[data-priority="Medium"] .wf-label { border-left-color: var(--blue); }
+  .wf-task[data-priority="Low"] .wf-label { border-left-color: var(--grey); }
+  .wf-title { display: flex; gap: var(--s2); align-items: baseline; min-width: 0; }
+  .wf-id { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+  .wf-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+  .wf-name:hover { text-decoration: underline; }
+  .wf-meta { display: flex; flex-wrap: wrap; gap: var(--s1); align-items: center; margin-top: var(--s1); font-size: 11px; color: var(--muted); }
+  .today-line { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--amber); opacity: 0.85; pointer-events: none; }
+  .wf-head .today-tag { position: absolute; top: 2px; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: #3a2700; background: var(--amber); border-radius: 3px; padding: 0 var(--s1); }
+  .out-range { position: absolute; top: 18px; left: var(--s3); font-size: 11px; color: var(--muted); }
 
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s2); }
-  .card-id { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .card-title { margin: var(--s1) 0 var(--s2); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
-  .card-meta { display: grid; gap: 2px; font-size: 12px; color: var(--muted); margin: 0; }
-  .card-meta dt { display: none; }
-  .card-meta dd { margin: 0; overflow-wrap: anywhere; }
-  .card-row { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); align-items: center; }
+  .bar-task {
+    position: absolute;
+    top: 16px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: 0;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    text-align: left;
+  }
+  .bar-task:active { cursor: grabbing; }
+  .bar-task .prog { position: absolute; top: 0; bottom: 0; left: 0; }
+  .bar-task .bar-text { position: relative; padding: 0 var(--s2); font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; line-height: 22px; }
+  .st-backlog { background: #243543; border-color: #6f8aa0; }
+  .st-backlog .prog { background: #4a6379; }
+  .st-progress { background: #0f3a39; border-color: var(--teal); }
+  .st-progress .prog { background: #0d7f75; }
+  .st-blocked { background: #3a2d0e; border-color: var(--amber); }
+  .st-blocked .prog { background: repeating-linear-gradient(45deg, #8a6212 0 6px, #6b4d10 6px 12px); }
+  .st-done { background: #143a2c; border-color: var(--green); }
+  .st-done .prog { background: #17855c; }
+  .bar-task.is-overdue { box-shadow: 0 0 0 2px var(--red); }
 
   .pill, .tag, .badge-overdue {
     display: inline-block;
@@ -198,11 +196,11 @@
     border: 1px solid transparent;
   }
   .pill-Critical { background: var(--red-bg); color: var(--red); border-color: var(--red); }
-  .pill-High { background: var(--warn-bg); color: #8a5300; border-color: var(--amber); }
-  .pill-Medium { background: var(--blue-100); color: var(--blue-700); border-color: var(--blue); }
-  .pill-Low { background: #eceff3; color: #4a5563; border-color: var(--grey); }
-  .tag { background: var(--blue-50); color: var(--blue-700); border-color: var(--line); font-weight: 500; }
-  .badge-overdue { background: var(--red-bg); color: var(--red); border-color: #f0b4b4; }
+  .pill-High { background: #3a2d0e; color: var(--amber); border-color: var(--amber); }
+  .pill-Medium { background: #15304a; color: var(--blue); border-color: var(--blue); }
+  .pill-Low { background: #222f3a; color: #aab9c5; border-color: var(--grey); }
+  .tag { background: var(--surface-2); color: var(--muted); border-color: var(--line); font-weight: 500; }
+  .badge-overdue { background: var(--red-bg); color: var(--red); border-color: var(--red); }
 
   .icon-btn {
     background: none;
@@ -215,41 +213,45 @@
     border-radius: 4px;
   }
   .icon-btn:hover { background: var(--red-bg); color: var(--red); }
+  .confirm { display: inline-flex; align-items: center; gap: var(--s2); font-size: 12px; color: var(--red); font-weight: 600; }
+  .confirm button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 4px; padding: 2px var(--s2); cursor: pointer; font-size: 12px; }
+  .confirm .confirm-yes { background: var(--red); border-color: var(--red); color: #2a0b0e; }
+  .empty { color: var(--muted); font-size: 13px; text-align: center; padding: var(--s5) 0; margin: 0; }
+
+  /* ===== Kanban board view ===== */
+  .board { display: flex; gap: var(--s4); align-items: flex-start; }
+  .column { flex: 1 1 0; min-width: 0; background: var(--surface); border: 2px solid var(--line); border-radius: var(--radius); padding: var(--s3); min-height: 240px; }
+  .column.drop-target { border-color: var(--teal); background: var(--surface-2); }
+  .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s1); }
+  .column-header h3 { margin: 0; font-size: 15px; }
+  .column-sub { font-size: 11px; color: var(--muted); margin: 0 0 var(--s3); }
+  .count { background: var(--teal); color: var(--teal-ink); border-radius: 999px; min-width: 24px; padding: 0 var(--s2); text-align: center; font-size: 12px; font-weight: 700; }
+  .cards { display: flex; flex-direction: column; gap: var(--s3); min-height: 60px; }
+  .card { background: var(--surface-2); border-radius: 6px; border-left: 6px solid var(--grey); padding: var(--s3); cursor: grab; }
+  .card.dragging { opacity: 0.45; }
+  .card[data-priority="Critical"] { border-left-color: var(--red); }
+  .card[data-priority="High"] { border-left-color: var(--amber); }
+  .card[data-priority="Medium"] { border-left-color: var(--blue); }
+  .card[data-priority="Low"] { border-left-color: var(--grey); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s2); }
+  .card-id { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .card-title { margin: var(--s1) 0 var(--s2); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+  .card-title [role="button"] { cursor: pointer; }
+  .card-title [role="button"]:hover { text-decoration: underline; }
+  .card-meta { display: grid; gap: 2px; font-size: 12px; color: var(--muted); margin: 0; }
+  .card-meta dt { display: none; }
+  .card-meta dd { margin: 0; overflow-wrap: anywhere; }
+  .card-row { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); align-items: center; }
   .card-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); margin-top: var(--s2); }
   .move-select { width: auto; font-size: 12px; padding: 2px var(--s2); }
-  .confirm { display: flex; align-items: center; gap: var(--s2); font-size: 12px; color: var(--red); font-weight: 600; }
-  .confirm button {
-    border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 4px;
-    padding: 2px var(--s2);
-    cursor: pointer;
-    font-size: 12px;
-  }
-  .confirm .confirm-yes { background: var(--red); border-color: var(--red); color: #fff; }
 
-  /* ===== Insights: progress and burndown ===== */
-  .insights {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-    gap: var(--s4);
-    padding: var(--s5) var(--s5) 0;
-  }
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: var(--s4);
-    min-width: 0;
-  }
-  .panel h2 { margin: 0; font-size: 15px; color: var(--blue-900); }
+  /* ===== Insights: burndown ===== */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s4); min-width: 0; }
+  .panel h2 { margin: 0; font-size: 15px; }
   .panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s2); margin-bottom: var(--s3); }
-  .seg-group { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .seg-group button { border: none; background: #fff; padding: var(--s1) var(--s3); cursor: pointer; font-size: 12px; }
-  .seg-group button[aria-pressed="true"] { background: var(--blue-700); color: #fff; font-weight: 600; }
   .keys { display: flex; flex-wrap: wrap; gap: var(--s4); font-size: 12px; color: var(--muted); margin: 0 0 var(--s2); padding: 0; list-style: none; }
   .keys li { display: flex; align-items: center; gap: var(--s2); }
-  .key-line { display: inline-block; width: 22px; border-top: 3px solid var(--blue-600); }
+  .key-line { display: inline-block; width: 22px; border-top: 3px solid var(--teal); }
   .key-line.ideal { border-top: 2px dashed var(--grey); }
   .chart { outline-offset: 4px; }
   .chart-svg { width: 100%; height: auto; display: block; }
@@ -257,170 +259,166 @@
   .chart-svg .grid { stroke: var(--line); stroke-width: 1; }
   .chart-svg .axis { stroke: var(--grey); stroke-width: 1; }
   .chart-svg .ideal { fill: none; stroke: var(--grey); stroke-width: 2; stroke-dasharray: 6 4; }
-  .chart-svg .actual { fill: none; stroke: var(--blue-600); stroke-width: 3; stroke-linejoin: round; }
+  .chart-svg .actual { fill: none; stroke: var(--teal); stroke-width: 3; stroke-linejoin: round; }
   .chart-svg .today { stroke: var(--amber); stroke-width: 1.5; stroke-dasharray: 3 3; }
-  .chart-svg .today-label { fill: #8a5300; font-weight: 600; }
-  .chart-svg .guide { stroke: var(--blue-900); stroke-width: 1; }
-  .chart-svg .dot-actual { fill: var(--blue-600); stroke: #fff; stroke-width: 2; }
-  .chart-svg .dot-ideal { fill: #fff; stroke: var(--grey); stroke-width: 2; }
-  .chart-svg .tip { fill: var(--blue-900); }
-  .chart-svg .tip-text { fill: #fff; font-size: 12px; }
+  .chart-svg .today-label { fill: var(--amber); font-weight: 600; }
+  .chart-svg .guide { stroke: var(--ink); stroke-width: 1; opacity: 0.6; }
+  .chart-svg .dot-actual { fill: var(--teal); stroke: var(--surface); stroke-width: 2; }
+  .chart-svg .dot-ideal { fill: var(--surface); stroke: var(--grey); stroke-width: 2; }
+  .chart-svg .tip { fill: var(--surface-2); stroke: var(--teal); }
+  .chart-svg .tip-text { fill: var(--ink); font-size: 12px; }
   .chart-note { margin: var(--s2) 0 0; font-size: 12px; color: var(--muted); }
 
+  /* ===== Insights: progress (sidebar) ===== */
   .overall-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); margin-bottom: var(--s2); }
-  .overall-head strong { font-size: 28px; color: var(--blue-900); line-height: 1; }
+  .overall-head strong { font-size: 28px; line-height: 1; color: var(--teal); }
   .overall-head span { color: var(--muted); font-size: 12px; }
-  .bar { display: flex; height: 12px; background: var(--blue-100); border-radius: 999px; overflow: hidden; }
+  .bar { display: flex; height: 12px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
   .bar > span { display: block; height: 100%; }
-  .bar .fill { background: var(--green); }
-  .seg-0 { background: var(--grey); }
-  .seg-1 { background: var(--blue); }
-  .seg-2 { background: var(--amber); }
-  .seg-3 { background: var(--green); }
-  .legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0 var(--s4); padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
-  .legend li { display: flex; align-items: center; gap: var(--s1); }
-  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .bar .fill { background: var(--teal); }
+  .seg-0 { background: #4a6379; }
+  .seg-1 { background: #0d7f75; }
+  .seg-2 { background: #b8821f; }
+  .seg-3 { background: #17855c; }
+  .bar-legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0 var(--s4); padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
+  .bar-legend li { display: flex; align-items: center; gap: var(--s1); }
   .proj-list { display: grid; gap: var(--s2); }
-  .proj-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--s1) var(--s2);
-    text-align: left;
-    background: var(--blue-50);
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding: var(--s2) var(--s3);
-    cursor: pointer;
-  }
-  .proj-row:hover { border-color: var(--line); }
-  .proj-row[aria-pressed="true"] { border-color: var(--blue-600); background: var(--blue-100); }
+  .proj-row { display: grid; grid-template-columns: 1fr auto; gap: var(--s1) var(--s2); text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: var(--s2) var(--s3); cursor: pointer; }
+  .proj-row:hover { border-color: var(--grey); }
+  .proj-row[aria-pressed="true"] { border-color: var(--teal); background: var(--surface-2); }
   .proj-name { font-size: 13px; font-weight: 600; }
   .proj-val { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .proj-row .bar { grid-column: 1 / -1; height: 8px; }
-  .hint-line { font-size: 12px; color: var(--muted); margin: var(--s3) 0 0; }
 
-  .card-title [role="button"] { cursor: pointer; }
-  .card-title [role="button"]:hover { text-decoration: underline; }
-  .detail { padding: var(--s5); }
-  .detail-desc { margin: 0 0 var(--s4); overflow-wrap: anywhere; }
-  .detail-grid { display: grid; grid-template-columns: auto 1fr; gap: var(--s2) var(--s4); margin: 0; }
-  .detail-grid dt { color: var(--muted); }
-  .detail-grid dd { margin: 0; font-weight: 600; }
-
-  /* ===== Modal ===== */
-  dialog {
-    border: none;
-    border-radius: 12px;
-    padding: 0;
-    width: min(560px, calc(100vw - 32px));
-    max-height: calc(100vh - 32px);
-    box-shadow: 0 10px 40px rgba(11, 37, 69, 0.35);
-  }
-  dialog::backdrop { background: rgba(11, 37, 69, 0.5); }
-  .modal-head {
-    background: var(--blue-900);
-    color: #fff;
-    padding: var(--s3) var(--s5);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .modal-head h2 { margin: 0; font-size: 17px; }
-  .modal-head .icon-btn { color: #fff; }
-  .modal-head .icon-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+  /* ===== Modals ===== */
+  dialog { border: 1px solid var(--line); border-radius: 12px; padding: 0; background: var(--surface); color: var(--ink); width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
+  dialog::backdrop { background: rgba(3, 8, 12, 0.7); }
+  .modal-head { background: var(--surface-2); padding: var(--s3) var(--s5); display: flex; justify-content: space-between; align-items: center; gap: var(--s3); border-bottom: 1px solid var(--line); }
+  .modal-head h2 { margin: 0; font-size: 17px; overflow-wrap: anywhere; }
+  .modal-head .icon-btn:hover { background: var(--surface); color: var(--ink); }
   form { padding: var(--s5); display: grid; gap: var(--s4); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); }
   .field label { display: block; font-weight: 600; margin-bottom: var(--s1); }
-  .field .hint { font-weight: 400; color: var(--muted); font-size: 12px; }
-  .error { color: var(--red); font-size: 12px; margin: var(--s1) 0 0; min-height: 0; }
+  .field .hint { font-weight: 400; }
+  .error { color: var(--red); font-size: 12px; margin: var(--s1) 0 0; }
   .form-actions { display: flex; justify-content: flex-end; gap: var(--s2); }
+  .detail { padding: var(--s5); display: grid; gap: var(--s4); }
+  .detail-desc { margin: 0; overflow-wrap: anywhere; }
+  .detail-grid { display: grid; grid-template-columns: auto 1fr; gap: var(--s2) var(--s4); margin: 0; align-items: center; }
+  .detail-grid dt { color: var(--muted); }
+  .detail-grid dd { margin: 0; font-weight: 600; }
+  .detail-edit { display: grid; gap: var(--s3); border-top: 1px solid var(--line); padding-top: var(--s4); }
+  .detail-edit label { display: block; font-size: 12px; color: var(--muted); margin-bottom: var(--s1); }
+  .detail-edit input[type="range"] { width: 100%; padding: 0; accent-color: var(--teal); }
+  .detail-msg { color: var(--red); font-size: 12px; margin: 0; min-height: 1em; }
 
   /* ===== Toasts ===== */
-  .toasts {
-    position: fixed;
-    right: var(--s4);
-    bottom: var(--s4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-    z-index: 100;
-    max-width: min(360px, calc(100vw - 32px));
-  }
-  .toast {
-    background: var(--green-bg);
-    border-left: 5px solid var(--green);
-    color: #12452a;
-    padding: var(--s3) var(--s4);
-    border-radius: 6px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-  }
-  .toast-warn { background: var(--warn-bg); border-left-color: var(--amber); color: #6b4200; }
+  .toasts { position: fixed; right: var(--s4); bottom: var(--s4); display: flex; flex-direction: column; gap: var(--s2); z-index: 100; max-width: min(360px, calc(100vw - 32px)); }
+  .toast { background: #123a32; border-left: 5px solid var(--green); color: #d2f5e8; padding: var(--s3) var(--s4); border-radius: 6px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+  .toast-warn { background: #3a2d0e; border-left-color: var(--amber); color: #ffe7b0; }
 
   /* ===== Responsive ===== */
+  @media (max-width: 899px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+    .legend { margin-left: 0; }
+  }
   @media (max-width: 767px) {
-    .board { flex-direction: column; padding: var(--s3); }
+    .board { flex-direction: column; }
     .column { width: 100%; flex: none; }
     .form-row { grid-template-columns: 1fr; }
-    .summary { margin-left: 0; }
-    .insights { grid-template-columns: 1fr; padding: var(--s4) var(--s4) 0; }
-    .app-header, .filters { padding-left: var(--s3); padding-right: var(--s3); }
+    .main { padding: var(--s4); }
+    .side { padding: var(--s4); }
+    :root { --label-w: 190px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ===== Header: wordmark, live summary strip, add button ===== -->
-<header class="app-header">
-  <h1 class="wordmark">IT PMO <span>Project Board</span></h1>
-  <ul class="summary" id="summary" aria-label="Board summary"></ul>
-  <button type="button" class="btn btn-primary" id="openAdd">+ Add Task</button>
-  <p class="header-note">Demo data only. The board is held in memory, so refreshing the page resets it to the seeded tasks.</p>
-</header>
+<div class="app">
 
-<!-- ===== Filter bar ===== -->
-<section class="filters" aria-label="Filters">
-  <div>
-    <label for="fProject">Project</label>
-    <select id="fProject"></select>
-  </div>
-  <div>
-    <label for="fAssignee">Assignee contains</label>
-    <input type="text" id="fAssignee" placeholder="e.g. Tan">
-  </div>
-  <div>
-    <label for="fPriority">Priority</label>
-    <select id="fPriority"></select>
-  </div>
-  <button type="button" class="btn btn-secondary" id="clearFilters">Clear filters</button>
-</section>
-
-<!-- ===== Insights: burndown chart and progress bars (both follow the unit toggle) ===== -->
-<section class="insights" aria-label="Progress and burndown">
-  <div class="panel">
-    <div class="panel-head">
-      <h2>Burndown</h2>
-      <div class="seg-group" role="group" aria-label="Measure by">
-        <button type="button" data-unit="points" aria-pressed="true">Points</button>
-        <button type="button" data-unit="tasks" aria-pressed="false">Tasks</button>
-      </div>
+  <!-- ===== Sidebar: brand, add button, live summary, filters, progress ===== -->
+  <aside class="side">
+    <div>
+      <h1 class="wordmark">IT <span>PMO</span></h1>
+      <p class="side-note">Demo data only. The board is held in memory, so refreshing the page resets it to the seeded tasks.</p>
     </div>
-    <ul class="keys" aria-label="Chart key">
-      <li><span class="key-line ideal"></span>Ideal</li>
-      <li><span class="key-line"></span>Actual remaining</li>
-    </ul>
-    <div class="chart" id="chart" tabindex="0" role="group" aria-label="Burndown chart. Use left and right arrow keys to read each day."></div>
-    <p class="chart-note" id="chartNote" aria-live="polite"></p>
-  </div>
-  <div class="panel">
-    <div class="panel-head"><h2>Progress</h2></div>
-    <div id="overall"></div>
-    <div class="proj-list" id="projectProgress"></div>
-    <p class="hint-line">Select a project to filter the board and chart.</p>
-  </div>
-</section>
+    <button type="button" class="btn btn-primary" id="openAdd">+ Add Task</button>
 
-<!-- ===== Kanban board: columns are rendered from state ===== -->
-<main class="board" id="board" aria-label="Kanban board"></main>
+    <section aria-label="Summary">
+      <h2>Summary</h2>
+      <ul class="stats" id="summary"></ul>
+    </section>
+
+    <section class="filters" aria-label="Filters">
+      <h2>Filters</h2>
+      <div>
+        <label for="fProject">Project</label>
+        <select id="fProject"></select>
+      </div>
+      <div>
+        <label for="fAssignee">Assignee contains</label>
+        <input type="text" id="fAssignee" placeholder="e.g. Tan">
+      </div>
+      <div>
+        <label for="fPriority">Priority</label>
+        <select id="fPriority"></select>
+      </div>
+      <button type="button" class="btn btn-secondary" id="clearFilters">Clear filters</button>
+    </section>
+
+    <section aria-label="Progress">
+      <h2>Progress</h2>
+      <div id="overall"></div>
+      <div class="proj-list" id="projectProgress"></div>
+      <p class="hint">Select a project to filter the views and chart.</p>
+    </section>
+  </aside>
+
+  <!-- ===== Main: view switch, waterfall timeline or Kanban board, burndown ===== -->
+  <div class="main">
+    <header class="topbar">
+      <h2>Delivery plan</h2>
+      <div class="seg-group" role="tablist" aria-label="View">
+        <button type="button" role="tab" data-view="waterfall" aria-selected="true">Waterfall</button>
+        <button type="button" role="tab" data-view="board" aria-selected="false">Board</button>
+      </div>
+      <div class="seg-group" id="spanGroup" role="group" aria-label="Timeline range">
+        <button type="button" data-span="28" aria-pressed="false">4 weeks</button>
+        <button type="button" data-span="56" aria-pressed="true">8 weeks</button>
+      </div>
+      <ul class="legend" aria-label="Status key">
+        <li><span class="swatch sw-backlog"></span>Backlog</li>
+        <li><span class="swatch sw-progress"></span>In Progress</li>
+        <li><span class="swatch sw-blocked"></span>Blocked (striped)</li>
+        <li><span class="swatch sw-done"></span>Done</li>
+      </ul>
+    </header>
+
+    <main id="views" aria-label="Task views">
+      <section id="waterfall" aria-label="Waterfall timeline"></section>
+      <section class="board" id="board" aria-label="Kanban board" hidden></section>
+    </main>
+    <p class="hint" id="viewHint">Drag a bar sideways to reschedule it. Click a bar or title for details, status and progress.</p>
+
+    <!-- Burndown chart -->
+    <section class="panel" aria-label="Burndown">
+      <div class="panel-head">
+        <h2>Burndown</h2>
+        <div class="seg-group" role="group" aria-label="Measure by">
+          <button type="button" data-unit="points" aria-pressed="true">Points</button>
+          <button type="button" data-unit="tasks" aria-pressed="false">Tasks</button>
+        </div>
+      </div>
+      <ul class="keys" aria-label="Chart key">
+        <li><span class="key-line ideal"></span>Ideal</li>
+        <li><span class="key-line"></span>Actual remaining</li>
+      </ul>
+      <div class="chart" id="chart" tabindex="0" role="group" aria-label="Burndown chart. Use left and right arrow keys to read each day."></div>
+      <p class="chart-note" id="chartNote" aria-live="polite"></p>
+    </section>
+  </div>
+</div>
 
 <!-- ===== Add Task modal ===== -->
 <dialog id="addDialog" aria-labelledby="addTitle">
@@ -465,14 +463,14 @@
     </div>
     <div class="form-row">
       <div class="field">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate" name="startDate">
+        <p class="error" id="err-startDate" role="alert"></p>
+      </div>
+      <div class="field">
         <label for="dueDate">Due Date</label>
         <input type="date" id="dueDate" name="dueDate">
         <p class="error" id="err-dueDate" role="alert"></p>
-      </div>
-      <div class="field">
-        <label for="status">Status</label>
-        <select id="status" name="status"></select>
-        <p class="error" id="err-status" role="alert"></p>
       </div>
     </div>
     <div class="form-row">
@@ -480,6 +478,11 @@
         <label for="points">Effort <span class="hint">(story points)</span></label>
         <select id="points" name="points"></select>
         <p class="error" id="err-points" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status"></select>
+        <p class="error" id="err-status" role="alert"></p>
       </div>
     </div>
     <div class="form-actions">
@@ -489,7 +492,7 @@
   </form>
 </dialog>
 
-<!-- ===== Task details modal (opened by clicking a card) ===== -->
+<!-- ===== Task details modal (opened from a bar, title or card) ===== -->
 <dialog id="detailDialog" aria-labelledby="detailTitle">
   <div class="modal-head">
     <h2 id="detailTitle">Task details</h2>
@@ -516,10 +519,10 @@ const FORMSUBMIT_ENDPOINT = "https://formsubmit.co/ajax/YOUR_EMAIL@example.com";
    REFERENCE DATA
    ====================================================================== */
 const STATUSES = [
-  { name: "Backlog", note: "Logged, not yet scheduled" },
-  { name: "In Progress", note: "Actively being worked" },
-  { name: "Blocked", note: "Waiting on a dependency, vendor or approval" },
-  { name: "Done", note: "Completed / closed" }
+  { name: "Backlog", key: "backlog", note: "Logged, not yet scheduled" },
+  { name: "In Progress", key: "progress", note: "Actively being worked" },
+  { name: "Blocked", key: "blocked", note: "Waiting on a dependency, vendor or approval" },
+  { name: "Done", key: "done", note: "Completed / closed" }
 ];
 const PROJECTS = ["Core Banking Upgrade", "Digital Channels", "Cybersecurity Uplift", "Data & Analytics", "Infrastructure & Cloud", "Vendor Management"];
 const CATEGORIES = ["Application Development", "Infrastructure", "Cybersecurity", "Data", "Compliance", "Vendor"];
@@ -530,10 +533,13 @@ const SPRINT = { before: 14, after: 14 };
 
 /* ======================================================================
    STATE: single source of truth. In memory only, no storage APIs.
-   `ui` holds transient view state (which card is asking "Delete?").
+   `ui` holds transient view state (view, range, confirm prompts, hover).
    ====================================================================== */
 const state = { tasks: [], filters: { project: "", assignee: "", priority: "" } };
-const ui = { confirmDeleteId: null, draggingId: null, chartUnit: "points", hoverDay: null };
+const ui = {
+  view: "waterfall", span: 56, chartUnit: "points", hoverDay: null,
+  confirmDeleteId: null, draggingId: null, detailId: null, justDragged: false
+};
 let nextIdNumber = 1;
 
 /* ======================================================================
@@ -551,33 +557,22 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
-// Today as YYYY-MM-DD in local time (date inputs and due dates use this format).
-function todayString() {
-  const d = new Date();
+// Dates are YYYY-MM-DD strings in local time.
+const toDate = (iso) => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); };
+function toIso(d) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
+const todayString = () => toIso(new Date());
+function addDays(iso, n) { const d = toDate(iso); d.setDate(d.getDate() + n); return toIso(d); }
+const daysFromToday = (n) => addDays(todayString(), n);
+const daysBetween = (a, b) => Math.round((toDate(b) - toDate(a)) / 86400000);
+const formatDate = (iso) => toDate(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+const formatShort = (iso) => toDate(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
-// Date string offset from today, used to keep seed data relative to "now".
-function daysFromToday(offset) {
-  const d = new Date();
-  d.setDate(d.getDate() + offset);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
-function formatDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
-}
-
-function isOverdue(task) {
-  return task.status !== "Done" && task.dueDate < todayString();
-}
-
-function generateTaskId() {
-  return `ITPM-${String(nextIdNumber++).padStart(4, "0")}`;
-}
+const isOverdue = (task) => task.status !== "Done" && task.dueDate < todayString();
+const statusKey = (name) => STATUSES.find((s) => s.name === name).key;
+const generateTaskId = () => `ITPM-${String(nextIdNumber++).padStart(4, "0")}`;
 
 function fillSelect(select, options, selected, placeholder) {
   const items = placeholder ? [`<option value="">${escapeHtml(placeholder)}</option>`] : [];
@@ -586,28 +581,29 @@ function fillSelect(select, options, selected, placeholder) {
 }
 
 /* ======================================================================
-   SEED DATA (demo tasks, spread across the four columns)
+   SEED DATA (13 demo tasks across the four statuses)
    ====================================================================== */
 function seedTasks() {
-  // [title, description, project, category, assignee, priority, due offset, status, points, created offset, completed offset]
+  // [title, description, project, category, assignee, priority, start, due, status, points, progress, created, completed] (day offsets from today)
   const seeds = [
-    ["Migrate FX pricing service to AWS", "Lift and shift the FX pricing engine, including rate feeds.", "Infrastructure & Cloud", "Infrastructure", "Priya Nair", "High", 21, "Backlog", 13, -14, null],
-    ["Define data lineage for regulatory reports", "Document source-to-report lineage for quarterly submissions.", "Data & Analytics", "Compliance", "Daniel Lim", "Medium", 25, "Backlog", 8, -14, null],
-    ["Vendor risk assessment for card processor", "Annual third-party risk review added mid-sprint.", "Vendor Management", "Compliance", "Hui Min Chua", "Medium", 15, "Backlog", 5, -7, null],
-    ["Patch CVE-2025-XXXX on branch teller VDI", "Roll out the vendor patch to teller virtual desktops in waves.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "Critical", 3, "In Progress", 5, -14, null],
-    ["Build account-opening API gateway routes", "Expose onboarding services via the API gateway.", "Digital Channels", "Application Development", "Aisha Rahman", "High", 12, "In Progress", 8, -14, null],
-    ["UAT sign-off for mobile onboarding release 4.2", "Collect business sign-off and defect closure evidence.", "Digital Channels", "Application Development", "Grace Wong", "High", -2, "In Progress", 5, -14, null],
-    ["Automate regression pack for release 4.2", "Convert the manual regression checklist to scripted tests.", "Digital Channels", "Application Development", "Grace Wong", "Medium", 6, "In Progress", 5, -5, null],
-    ["Core ledger vendor licence renewal", "Waiting on procurement approval for the renewal quote.", "Vendor Management", "Vendor", "Hui Min Chua", "Medium", -5, "Blocked", 3, -14, null],
-    ["Firewall rule recertification", "Awaiting network team capacity to review stale rules.", "Cybersecurity Uplift", "Cybersecurity", "Ravi Menon", "Low", 9, "Blocked", 3, -14, null],
-    ["Decommission legacy batch scheduler", "Cutover completed and old scheduler switched off.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "Medium", -10, "Done", 5, -14, -9],
-    ["Upgrade core ledger test environment", "Refresh the SIT environment to the target release.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "High", -8, "Done", 8, -14, -6],
-    ["Penetration test remediation, phase 1", "Close high and critical findings from the external test.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "High", -3, "Done", 5, -14, -3],
-    ["Publish consent data dictionary", "Agreed definitions for customer consent attributes.", "Data & Analytics", "Data", "Daniel Lim", "Low", -1, "Done", 2, -10, -1]
+    ["Migrate FX pricing service to AWS", "Lift and shift the FX pricing engine, including rate feeds.", "Infrastructure & Cloud", "Infrastructure", "Priya Nair", "High", 2, 21, "Backlog", 13, 0, -14, null],
+    ["Define data lineage for regulatory reports", "Document source-to-report lineage for quarterly submissions.", "Data & Analytics", "Compliance", "Daniel Lim", "Medium", 5, 25, "Backlog", 8, 0, -14, null],
+    ["Vendor risk assessment for card processor", "Annual third-party risk review added mid-sprint.", "Vendor Management", "Compliance", "Hui Min Chua", "Medium", 4, 15, "Backlog", 5, 0, -7, null],
+    ["Patch CVE-2025-XXXX on branch teller VDI", "Roll out the vendor patch to teller virtual desktops in waves.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "Critical", -6, 3, "In Progress", 5, 60, -14, null],
+    ["Build account-opening API gateway routes", "Expose onboarding services via the API gateway.", "Digital Channels", "Application Development", "Aisha Rahman", "High", -3, 12, "In Progress", 8, 40, -14, null],
+    ["UAT sign-off for mobile onboarding release 4.2", "Collect business sign-off and defect closure evidence.", "Digital Channels", "Application Development", "Grace Wong", "High", -9, -2, "In Progress", 5, 80, -14, null],
+    ["Automate regression pack for release 4.2", "Convert the manual regression checklist to scripted tests.", "Digital Channels", "Application Development", "Grace Wong", "Medium", -2, 6, "In Progress", 5, 30, -5, null],
+    ["Core ledger vendor licence renewal", "Waiting on procurement approval for the renewal quote.", "Vendor Management", "Vendor", "Hui Min Chua", "Medium", -12, -5, "Blocked", 3, 40, -14, null],
+    ["Firewall rule recertification", "Awaiting network team capacity to review stale rules.", "Cybersecurity Uplift", "Cybersecurity", "Ravi Menon", "Low", -1, 9, "Blocked", 3, 20, -14, null],
+    ["Decommission legacy batch scheduler", "Cutover completed and old scheduler switched off.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "Medium", -14, -10, "Done", 5, 100, -14, -9],
+    ["Upgrade core ledger test environment", "Refresh the SIT environment to the target release.", "Core Banking Upgrade", "Infrastructure", "Elaine Foo", "High", -13, -8, "Done", 8, 100, -14, -6],
+    ["Penetration test remediation, phase 1", "Close high and critical findings from the external test.", "Cybersecurity Uplift", "Cybersecurity", "Marcus Tan", "High", -10, -3, "Done", 5, 100, -14, -3],
+    ["Publish consent data dictionary", "Agreed definitions for customer consent attributes.", "Data & Analytics", "Data", "Daniel Lim", "Low", -7, -1, "Done", 2, 100, -10, -1]
   ];
-  state.tasks = seeds.map(([title, description, project, category, assignee, priority, dueOffset, status, points, createdOffset, doneOffset]) => ({
-    id: generateTaskId(), title, description, project, category, assignee, priority, dueDate: daysFromToday(dueOffset), status, points,
-    createdAt: daysFromToday(createdOffset), completedAt: doneOffset === null ? null : daysFromToday(doneOffset)
+  state.tasks = seeds.map(([title, description, project, category, assignee, priority, start, due, status, points, progress, created, done]) => ({
+    id: generateTaskId(), title, description, project, category, assignee, priority, status, points, progress,
+    startDate: daysFromToday(start), dueDate: daysFromToday(due),
+    createdAt: daysFromToday(created), completedAt: done === null ? null : daysFromToday(done)
   }));
 }
 
@@ -623,83 +619,265 @@ function applyFilters(tasks) {
     (!needle || t.assignee.toLowerCase().includes(needle))
   );
 }
+const filtersActive = () => Boolean(state.filters.project || state.filters.priority || state.filters.assignee.trim());
 
 /* ======================================================================
-   RENDERING: the only place card contents are written to the DOM
+   RENDERING: the only place view contents are written to the DOM
    ====================================================================== */
+
+// Inline delete controls, shared by cards and waterfall rows.
+function deleteControl(task) {
+  if (ui.confirmDeleteId === task.id) {
+    return `<span class="confirm" role="group" aria-label="Confirm delete">Delete?
+      <button type="button" class="confirm-yes" data-action="delete-yes" data-id="${escapeHtml(task.id)}">Yes</button>
+      <button type="button" data-action="delete-no" data-id="${escapeHtml(task.id)}">No</button></span>`;
+  }
+  return `<button type="button" class="icon-btn" data-action="delete-ask" data-id="${escapeHtml(task.id)}" aria-label="Delete task ${escapeHtml(task.id)}">&times;</button>`;
+}
+
+// Kanban card.
 function renderCard(task) {
-  const overdue = isOverdue(task);
-  const confirming = ui.confirmDeleteId === task.id;
-  const moveOptions = STATUSES
-    .map((s) => `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`)
-    .join("");
-  const actions = confirming
-    ? `<span class="confirm" role="group" aria-label="Confirm delete">Delete?
-         <button type="button" class="confirm-yes" data-action="delete-yes" data-id="${escapeHtml(task.id)}">Yes</button>
-         <button type="button" data-action="delete-no" data-id="${escapeHtml(task.id)}">No</button>
-       </span>`
+  const moveOptions = STATUSES.map((s) => `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`).join("");
+  const actions = ui.confirmDeleteId === task.id
+    ? deleteControl(task)
     : `<select class="move-select" data-action="move" data-id="${escapeHtml(task.id)}" aria-label="Move ${escapeHtml(task.id)} to another column">
          <option value="">Move &#9656;</option>${moveOptions}
        </select>`;
-
   return `
-    <article class="card" draggable="true" data-id="${escapeHtml(task.id)}" data-priority="${escapeHtml(task.priority)}" ${task.description ? `title="${escapeHtml(task.description)}"` : ""}>
+    <article class="card" draggable="true" data-id="${escapeHtml(task.id)}" data-priority="${escapeHtml(task.priority)}">
       <div class="card-top">
         <span class="card-id">${escapeHtml(task.id)}</span>
-        <button type="button" class="icon-btn" data-action="delete-ask" data-id="${escapeHtml(task.id)}" aria-label="Delete task ${escapeHtml(task.id)}">&times;</button>
+        ${ui.confirmDeleteId === task.id ? "" : deleteControl(task)}
       </div>
       <h3 class="card-title"><span role="button" tabindex="0" data-action="details" data-id="${escapeHtml(task.id)}">${escapeHtml(task.title)}</span></h3>
       <dl class="card-meta">
-        <dt>Project</dt><dd>&#128193; ${escapeHtml(task.project)}</dd>
-        <dt>Assignee</dt><dd>&#128100; ${escapeHtml(task.assignee)}</dd>
-        <dt>Due</dt><dd>&#128197; ${escapeHtml(formatDate(task.dueDate))}</dd>
+        <dt>Project</dt><dd>${escapeHtml(task.project)}</dd>
+        <dt>Assignee</dt><dd>${escapeHtml(task.assignee)}</dd>
+        <dt>Dates</dt><dd>${escapeHtml(formatShort(task.startDate))} &rarr; ${escapeHtml(formatShort(task.dueDate))}</dd>
       </dl>
       <div class="card-row">
         <span class="pill pill-${escapeHtml(task.priority)}">${escapeHtml(task.priority)}</span>
         <span class="tag">${escapeHtml(task.category)}</span>
         <span class="tag">${task.points} pts</span>
-        ${overdue ? '<span class="badge-overdue">Overdue</span>' : ""}
+        ${isOverdue(task) ? '<span class="badge-overdue">Overdue</span>' : ""}
       </div>
       <div class="card-actions">${actions}</div>
     </article>`;
 }
 
-function renderSummary() {
-  const all = state.tasks;
-  const parts = [`<li>Total<strong>${all.length}</strong></li>`];
-  STATUSES.forEach((s) => {
-    parts.push(`<li>${escapeHtml(s.name)}<strong>${all.filter((t) => t.status === s.name).length}</strong></li>`);
-  });
-  const totalPts = all.reduce((n, t) => n + t.points, 0);
-  const donePts = all.filter((t) => t.status === "Done").reduce((n, t) => n + t.points, 0);
-  parts.push(`<li>Progress<strong>${totalPts ? Math.round((donePts / totalPts) * 100) : 0}%</strong></li>`);
-  parts.push(`<li class="summary-overdue">Overdue<strong>${all.filter(isOverdue).length}</strong></li>`);
-  $("summary").innerHTML = parts.join("");
-}
-
-function renderBoard() {
+function renderKanban() {
   const visible = applyFilters(state.tasks);
   $("board").innerHTML = STATUSES.map((s) => {
     const cards = visible.filter((t) => t.status === s.name);
     return `
       <section class="column" data-status="${escapeHtml(s.name)}" aria-label="${escapeHtml(s.name)} column">
         <div class="column-header">
-          <h2>${escapeHtml(s.name)}</h2>
+          <h3>${escapeHtml(s.name)}</h3>
           <span class="count" aria-label="${cards.length} tasks">${cards.length}</span>
         </div>
         <p class="column-sub">${escapeHtml(s.note)} &middot; ${cards.reduce((n, t) => n + t.points, 0)} pts</p>
         <div class="cards">${cards.length ? cards.map(renderCard).join("") : '<p class="empty">No tasks</p>'}</div>
       </section>`;
   }).join("");
+}
+
+// Waterfall (Gantt-style) timeline: projects as phases, tasks cascading by start date.
+function windowStart() { return daysFromToday(-Math.round(ui.span / 4)); }
+
+function renderWaterfall() {
+  const visible = applyFilters(state.tasks);
+  const span = ui.span;
+  const start = windowStart();
+  const idx = (iso) => daysBetween(start, iso);
+  const pct = (i) => (Math.max(0, Math.min(span, i)) / span) * 100;
+  const todayIdx = idx(todayString());
+  const todayLine = todayIdx >= 0 && todayIdx < span ? `<i class="today-line" style="left:${pct(todayIdx + 0.5)}%"></i>` : "";
+  const todayTag = todayIdx >= 0 && todayIdx < span ? `<span class="today-tag" style="left:${pct(todayIdx + 0.5)}%">Today</span>` : "";
+
+  const weekLabels = [];
+  for (let i = 0; i < span; i += 7) weekLabels.push(`<span style="left:${pct(i)}%">${escapeHtml(formatShort(addDays(start, i)))}</span>`);
+  let html = `<div class="wf-scroll"><div class="wf" style="--span:${span}">
+    <div class="wf-row wf-head"><div class="wf-label">Task</div><div class="wf-time">${weekLabels.join("")}${todayTag}</div></div>`;
+
+  let shown = 0;
+  PROJECTS.forEach((project) => {
+    const rows = visible
+      .filter((t) => t.project === project)
+      .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.dueDate.localeCompare(b.dueDate));
+    if (!rows.length) return;
+    shown += rows.length;
+
+    const first = rows.reduce((m, t) => (t.startDate < m ? t.startDate : m), rows[0].startDate);
+    const last = rows.reduce((m, t) => (t.dueDate > m ? t.dueDate : m), rows[0].dueDate);
+    const pts = rows.reduce((n, t) => n + t.points, 0);
+    const earned = rows.reduce((n, t) => n + (t.points * t.progress) / 100, 0);
+    const gl = pct(idx(first)), gr = pct(idx(last) + 1);
+    html += `<div class="wf-row wf-group">
+      <div class="wf-label">${escapeHtml(project)}<small>${rows.length} tasks &middot; ${pts ? Math.round((earned / pts) * 100) : 0}% complete</small></div>
+      <div class="wf-time">${gr > gl ? `<span class="wf-summary" style="left:${gl}%;width:${gr - gl}%"></span>` : ""}${todayLine}</div></div>`;
+
+    rows.forEach((t) => {
+      const s = idx(t.startDate), e = idx(t.dueDate) + 1;
+      const inRange = e > 0 && s < span;
+      const l = pct(s), w = Math.max(pct(e) - l, 1.2);
+      const overdue = isOverdue(t);
+      const tip = `${t.id}: ${t.title}. ${formatShort(t.startDate)} to ${formatShort(t.dueDate)}, ${t.progress}% complete, ${t.status}`;
+      html += `<div class="wf-row wf-task" data-priority="${escapeHtml(t.priority)}">
+        <div class="wf-label">
+          <div class="wf-title"><span class="wf-id">${escapeHtml(t.id)}</span><span class="wf-name" role="button" tabindex="0" data-action="details" data-id="${escapeHtml(t.id)}">${escapeHtml(t.title)}</span></div>
+          <div class="wf-meta">
+            <span>${escapeHtml(t.assignee)}</span>
+            <span class="pill pill-${escapeHtml(t.priority)}">${escapeHtml(t.priority)}</span>
+            <span class="tag">${t.points} pts</span>
+            ${overdue ? '<span class="badge-overdue">Overdue</span>' : ""}
+            ${deleteControl(t)}
+          </div>
+        </div>
+        <div class="wf-time">${todayLine}${inRange
+          ? `<button type="button" class="bar-task st-${statusKey(t.status)}${overdue ? " is-overdue" : ""}" style="left:${l}%;width:${w}%" data-bar data-id="${escapeHtml(t.id)}" aria-label="${escapeHtml(tip)}" title="${escapeHtml(tip)}">
+               <span class="prog" style="width:${t.progress}%"></span><span class="bar-text">${t.progress}%</span></button>`
+          : `<span class="out-range">Outside this range (${escapeHtml(formatShort(t.startDate))} to ${escapeHtml(formatShort(t.dueDate))})</span>`}</div>
+      </div>`;
+    });
+  });
+  if (!shown) html += '<p class="empty">No tasks match the filters.</p>';
+  $("waterfall").innerHTML = html + "</div></div>";
+}
+
+function renderSummary() {
+  const all = state.tasks;
+  const totalPts = all.reduce((n, t) => n + t.points, 0);
+  const donePts = all.filter((t) => t.status === "Done").reduce((n, t) => n + t.points, 0);
+  const items = [["Total", all.length, ""]];
+  STATUSES.forEach((s) => items.push([s.name, all.filter((t) => t.status === s.name).length, ""]));
+  items.push(["Progress", `${totalPts ? Math.round((donePts / totalPts) * 100) : 0}%`, ""]);
+  items.push(["Overdue", all.filter(isOverdue).length, "stat-overdue"]);
+  $("summary").innerHTML = items.map(([label, v, cls]) => `<li class="${cls}">${escapeHtml(label)}<strong>${escapeHtml(v)}</strong></li>`).join("");
+}
+
+// Re-renders everything that depends on state.
+function renderBoard() {
+  document.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === ui.view)));
+  document.querySelectorAll("[data-span]").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.span) === ui.span)));
+  $("spanGroup").hidden = ui.view !== "waterfall";
+  $("waterfall").hidden = ui.view !== "waterfall";
+  $("board").hidden = ui.view !== "board";
+  $("viewHint").textContent = ui.view === "waterfall"
+    ? "Drag a bar sideways to reschedule it. Click a bar or title for details, status and progress."
+    : "Drag cards between columns, or use the Move menu on a card. Click a title for details.";
+  if (ui.view === "waterfall") renderWaterfall(); else renderKanban();
   renderSummary();
   renderInsights();
+}
+
+/* ======================================================================
+   INSIGHTS: progress bars and burndown chart (follow the unit toggle)
+   ====================================================================== */
+const unitLabel = () => (ui.chartUnit === "tasks" ? "tasks" : "pts");
+const weightOf = (task) => (ui.chartUnit === "tasks" ? 1 : task.points);
+const sumWeight = (tasks) => tasks.reduce((n, t) => n + weightOf(t), 0);
+const round1 = (n) => Math.round(n * 10) / 10;
+
+// One row per day of the window: ideal line, and remaining work up to today.
+function burndownSeries(tasks) {
+  const days = [];
+  for (let i = -SPRINT.before; i <= SPRINT.after; i++) days.push(daysFromToday(i));
+  const today = todayString();
+  const startScope = sumWeight(tasks.filter((t) => t.createdAt <= days[0]));
+  return days.map((date, i) => {
+    const scope = sumWeight(tasks.filter((t) => t.createdAt <= date));
+    const done = sumWeight(tasks.filter((t) => t.completedAt && t.completedAt <= date));
+    return { date, scope, ideal: startScope * (1 - i / (days.length - 1)), remaining: date <= today ? scope - done : null };
+  });
+}
+
+function renderChart() {
+  const series = burndownSeries(applyFilters(state.tasks));
+  const W = 640, H = 280, L = 44, R = 16, T = 16, B = 34;
+  const pw = W - L - R, ph = H - T - B, last = series.length - 1;
+  const maxVal = Math.max(1, ...series.map((p) => Math.max(p.ideal, p.remaining ?? 0)));
+  const step = [1, 2, 5, 10, 20, 50, 100].find((s) => maxVal / s <= 5) || 200;
+  const yMax = Math.ceil(maxVal / step) * step;
+  const x = (i) => L + (pw * i) / last;
+  const y = (v) => T + ph * (1 - v / yMax);
+  const todayIdx = SPRINT.before;
+
+  let svg = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Burndown chart in ${unitLabel()}">`;
+  for (let v = 0; v <= yMax; v += step) {
+    svg += `<line class="${v === 0 ? "axis" : "grid"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
+    svg += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  [0, 7, 14, 21, 28].filter((i) => i <= last).forEach((i) => {
+    svg += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle">${escapeHtml(formatShort(series[i].date))}</text>`;
+  });
+  svg += `<line class="today" x1="${x(todayIdx)}" x2="${x(todayIdx)}" y1="${T}" y2="${T + ph}"/>`;
+  svg += `<text class="today-label" x="${x(todayIdx) + 4}" y="${T + 10}">Today</text>`;
+  svg += `<polyline class="ideal" points="${series.map((p, i) => `${x(i)},${y(p.ideal)}`).join(" ")}"/>`;
+  svg += `<polyline class="actual" points="${series.map((p, i) => (p.remaining === null ? "" : `${x(i)},${y(p.remaining)}`)).filter(Boolean).join(" ")}"/>`;
+
+  // Hover / keyboard read-out for one day.
+  const h = ui.hoverDay;
+  if (h !== null) {
+    const p = series[h];
+    svg += `<line class="guide" x1="${x(h)}" x2="${x(h)}" y1="${T}" y2="${T + ph}"/>`;
+    svg += `<circle class="dot-ideal" cx="${x(h)}" cy="${y(p.ideal)}" r="5"/>`;
+    if (p.remaining !== null) svg += `<circle class="dot-actual" cx="${x(h)}" cy="${y(p.remaining)}" r="5"/>`;
+    const tipW = 140, tipH = 58;
+    const tipX = x(h) > W / 2 ? x(h) - tipW - 10 : x(h) + 10;
+    svg += `<rect class="tip" x="${tipX}" y="${T + 4}" width="${tipW}" height="${tipH}" rx="6"/>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 22}" font-weight="700">${escapeHtml(formatShort(p.date))}</text>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 38}">Ideal: ${round1(p.ideal)} ${unitLabel()}</text>`;
+    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 54}">${p.remaining === null ? "Actual: not yet" : `Actual: ${p.remaining} ${unitLabel()}`}</text>`;
+  }
+  svg += `<rect x="${L}" y="${T}" width="${pw}" height="${ph}" fill="transparent"/></svg>`;
+  $("chart").innerHTML = svg;
+
+  const now = series[todayIdx];
+  const diff = round1(now.ideal - now.remaining);
+  const verdict = diff >= 0 ? `${diff} ${unitLabel()} ahead of the ideal line` : `${-diff} ${unitLabel()} behind the ideal line`;
+  $("chartNote").textContent = `Today: ${now.remaining} ${unitLabel()} remaining of ${now.scope} in scope, ${verdict}.` +
+    (filtersActive() ? " The chart follows the active filters." : "");
+}
+
+function renderProgress() {
+  const all = state.tasks;
+  const total = sumWeight(all);
+  const byStatus = STATUSES.map((s) => sumWeight(all.filter((t) => t.status === s.name)));
+  const done = byStatus[STATUSES.length - 1];
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const segments = byStatus.map((v, i) => `<span class="seg-${i}" style="width:${total ? (v / total) * 100 : 0}%" title="${escapeHtml(STATUSES[i].name)}: ${v} ${unitLabel()}"></span>`).join("");
+  const legend = STATUSES.map((s, i) => `<li><span class="swatch seg-${i}"></span>${escapeHtml(s.name)} ${byStatus[i]}</li>`).join("");
+  $("overall").innerHTML = `
+    <div class="overall-head"><strong>${pct}%</strong><span>complete &middot; ${done} of ${total} ${unitLabel()} done</span></div>
+    <div class="bar" role="progressbar" aria-label="Overall completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${segments}</div>
+    <ul class="bar-legend">${legend}</ul>`;
+
+  $("projectProgress").innerHTML = PROJECTS.map((p) => {
+    const tasks = all.filter((t) => t.project === p);
+    const t = sumWeight(tasks);
+    const d = sumWeight(tasks.filter((x) => x.status === "Done"));
+    const pr = t ? Math.round((d / t) * 100) : 0;
+    const active = state.filters.project === p;
+    return `<button type="button" class="proj-row" data-project="${escapeHtml(p)}" aria-pressed="${active}">
+      <span class="proj-name">${escapeHtml(p)}</span>
+      <span class="proj-val">${d}/${t} ${unitLabel()} &middot; ${pr}%</span>
+      <span class="bar"><span class="fill" style="width:${pr}%"></span></span>
+    </button>`;
+  }).join("");
+}
+
+function renderInsights() {
+  document.querySelectorAll("[data-unit]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.unit === ui.chartUnit)));
+  renderProgress();
+  renderChart();
 }
 
 /* ======================================================================
    ACTIONS (mutate state, then re-render)
    ====================================================================== */
 function addTask(data) {
-  const task = { id: generateTaskId(), ...data, createdAt: todayString(), completedAt: data.status === "Done" ? todayString() : null };
+  const progress = data.status === "Done" ? 100 : data.status === "In Progress" ? 10 : 0;
+  const task = { id: generateTaskId(), ...data, progress, createdAt: todayString(), completedAt: data.status === "Done" ? todayString() : null };
   state.tasks.push(task);
   renderBoard();
   return task;
@@ -710,6 +888,32 @@ function moveTask(id, status) {
   if (!task || !STATUSES.some((s) => s.name === status) || task.status === status) return;
   task.status = status;
   task.completedAt = status === "Done" ? todayString() : null;
+  if (status === "Done") task.progress = 100;
+  else task.progress = Math.min(task.progress, 90);
+  renderBoard();
+}
+
+function setProgress(id, value) {
+  const task = state.tasks.find((t) => t.id === id);
+  if (!task) return;
+  task.progress = Math.max(0, Math.min(100, Math.round(value)));
+  renderBoard();
+}
+
+function setDates(id, startDate, dueDate) {
+  const task = state.tasks.find((t) => t.id === id);
+  if (!task || !startDate || !dueDate || startDate > dueDate) return false;
+  task.startDate = startDate;
+  task.dueDate = dueDate;
+  renderBoard();
+  return true;
+}
+
+function shiftTask(id, days) {
+  const task = state.tasks.find((t) => t.id === id);
+  if (!task || !days) return;
+  task.startDate = addDays(task.startDate, days);
+  task.dueDate = addDays(task.dueDate, days);
   renderBoard();
 }
 
@@ -748,9 +952,10 @@ async function notifyNewTask(task) {
       Category: task.category,
       Assignee: task.assignee,
       Priority: task.priority,
+      "Start Date": task.startDate,
       "Due Date": task.dueDate,
-      Status: task.status,
       "Effort (points)": task.points,
+      Status: task.status,
       "Submitted At": new Date().toISOString()
     })
   });
@@ -761,7 +966,7 @@ async function notifyNewTask(task) {
 /* ======================================================================
    FORM: validation and submit
    ====================================================================== */
-const FIELDS = ["title", "description", "project", "category", "assignee", "priority", "dueDate", "points", "status"];
+const FIELDS = ["title", "description", "project", "category", "assignee", "priority", "startDate", "dueDate", "points", "status"];
 
 function readForm() {
   const v = (id) => $(id).value;
@@ -772,6 +977,7 @@ function readForm() {
     category: v("category"),
     assignee: v("assignee").trim(),
     priority: v("priority"),
+    startDate: v("startDate"),
     dueDate: v("dueDate"),
     points: Number(v("points")),
     status: v("status")
@@ -787,8 +993,10 @@ function validate(data) {
   if (!CATEGORIES.includes(data.category)) errors.category = "Choose a category.";
   if (!data.assignee) errors.assignee = "Assignee is required.";
   if (!PRIORITIES.includes(data.priority)) errors.priority = "Choose a priority.";
+  if (!data.startDate) errors.startDate = "Start date is required.";
   if (!data.dueDate) errors.dueDate = "Due date is required.";
   else if (data.dueDate < todayString()) errors.dueDate = "Due date cannot be in the past.";
+  else if (data.startDate && data.startDate > data.dueDate) errors.startDate = "Start date must be on or before the due date.";
   if (!POINTS.includes(data.points)) errors.points = "Choose an effort estimate.";
   if (!STATUSES.some((s) => s.name === data.status)) errors.status = "Choose a status.";
   return errors;
@@ -808,6 +1016,7 @@ function resetForm() {
   fillSelect($("priority"), PRIORITIES, "Medium");
   fillSelect($("points"), POINTS, 3);
   fillSelect($("status"), STATUSES.map((s) => s.name), "Backlog");
+  $("startDate").value = todayString();
   showErrors({});
 }
 
@@ -823,7 +1032,7 @@ async function handleSubmit(event) {
   btn.disabled = true;
   btn.textContent = "Sending…";
 
-  // Optimistic UI: the card appears immediately; the email goes out in parallel.
+  // Optimistic UI: the task appears immediately; the email goes out in parallel.
   const task = addTask(data);
   $("addDialog").close();
   resetForm();
@@ -840,14 +1049,65 @@ async function handleSubmit(event) {
 }
 
 /* ======================================================================
+   TASK DETAILS: read-only facts plus live status, progress and dates
+   ====================================================================== */
+function openDetails(id) {
+  const t = state.tasks.find((x) => x.id === id);
+  if (!t) return;
+  ui.detailId = id;
+  $("detailTitle").textContent = `${t.id}: ${t.title}`;
+  const rows = [["Project", t.project], ["Category", t.category], ["Assignee", t.assignee], ["Priority", t.priority], ["Effort", `${t.points} pts`], ["Created", formatDate(t.createdAt)]];
+  const statusOptions = STATUSES.map((s) => `<option value="${escapeHtml(s.name)}"${s.name === t.status ? " selected" : ""}>${escapeHtml(s.name)}</option>`).join("");
+  $("detailBody").innerHTML =
+    `<p class="detail-desc">${t.description ? escapeHtml(t.description) : "<em>No description.</em>"}</p>` +
+    `<dl class="detail-grid">${rows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join("")}</dl>` +
+    `<div class="detail-edit">
+       <div><label for="dStatus">Status</label><select id="dStatus">${statusOptions}</select></div>
+       <div><label for="dProgress">Progress: <output id="dProgressOut">${t.progress}%</output></label>
+         <input type="range" id="dProgress" min="0" max="100" step="5" value="${t.progress}"></div>
+       <div class="form-row">
+         <div><label for="dStart">Start date</label><input type="date" id="dStart" value="${escapeHtml(t.startDate)}"></div>
+         <div><label for="dDue">Due date</label><input type="date" id="dDue" value="${escapeHtml(t.dueDate)}"></div>
+       </div>
+       <p class="detail-msg" id="detailMsg" role="alert"></p>
+     </div>`;
+  $("detailDialog").showModal();
+}
+
+function wireDetailEvents() {
+  const body = $("detailBody");
+  body.addEventListener("change", (e) => {
+    const id = ui.detailId;
+    const task = state.tasks.find((t) => t.id === id);
+    if (!task) return;
+    if (e.target.id === "dStatus") {
+      moveTask(id, e.target.value);
+      $("dProgress").value = task.progress;
+      $("dProgressOut").textContent = `${task.progress}%`;
+    } else if (e.target.id === "dStart" || e.target.id === "dDue") {
+      const ok = setDates(id, $("dStart").value, $("dDue").value);
+      $("detailMsg").textContent = ok ? "" : "Start date must be on or before the due date.";
+      if (!ok) { $("dStart").value = task.startDate; $("dDue").value = task.dueDate; }
+    }
+  });
+  body.addEventListener("input", (e) => {
+    if (e.target.id !== "dProgress") return;
+    $("dProgressOut").textContent = `${e.target.value}%`;
+    setProgress(ui.detailId, Number(e.target.value));
+  });
+  $("closeDetail").addEventListener("click", () => $("detailDialog").close());
+}
+
+/* ======================================================================
    EVENT WIRING
    ====================================================================== */
-function wireBoardEvents() {
-  const board = $("board");
+function wireViewEvents() {
+  const views = $("views");
 
-  // Card buttons and the keyboard-accessible Move control (event delegation).
-  board.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-action]");
+  // Buttons, details links and the Move menu (event delegation across both views).
+  views.addEventListener("click", (e) => {
+    if (ui.justDragged) { ui.justDragged = false; return; }
+    const btn = e.target.closest("[data-action], [data-bar]");
     if (!btn) {
       const card = e.target.closest(".card");
       if (card && !e.target.closest(".confirm")) openDetails(card.dataset.id);
@@ -855,18 +1115,24 @@ function wireBoardEvents() {
     }
     if (btn.tagName === "SELECT") return;
     const id = btn.dataset.id;
-    if (btn.dataset.action === "details") return openDetails(id);
-    if (btn.dataset.action === "delete-ask") ui.confirmDeleteId = id;
-    else if (btn.dataset.action === "delete-no") ui.confirmDeleteId = null;
-    else if (btn.dataset.action === "delete-yes") return deleteTask(id);
+    const action = btn.dataset.action || "details";
+    if (action === "details") return openDetails(id);
+    if (action === "delete-ask") ui.confirmDeleteId = id;
+    else if (action === "delete-no") ui.confirmDeleteId = null;
+    else if (action === "delete-yes") return deleteTask(id);
     renderBoard();
   });
-  board.addEventListener("change", (e) => {
+  views.addEventListener("change", (e) => {
     const sel = e.target.closest('select[data-action="move"]');
     if (sel && sel.value) moveTask(sel.dataset.id, sel.value);
   });
+  views.addEventListener("keydown", (e) => {
+    const el = e.target.closest('[data-action="details"][role="button"]');
+    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openDetails(el.dataset.id); }
+  });
 
-  // Native HTML5 drag and drop.
+  // Kanban: native HTML5 drag and drop between columns.
+  const board = $("board");
   board.addEventListener("dragstart", (e) => {
     const card = e.target.closest(".card");
     if (!card) return;
@@ -875,10 +1141,7 @@ function wireBoardEvents() {
     e.dataTransfer.setData("text/plain", card.dataset.id);
     card.classList.add("dragging");
   });
-  board.addEventListener("dragend", () => {
-    ui.draggingId = null;
-    renderBoard();
-  });
+  board.addEventListener("dragend", () => { ui.draggingId = null; renderBoard(); });
   board.addEventListener("dragover", (e) => {
     const col = e.target.closest(".column");
     if (!col) return;
@@ -900,6 +1163,36 @@ function wireBoardEvents() {
     moveTask(id, col.dataset.status);
     renderBoard();
   });
+
+  // Waterfall: drag a bar sideways to reschedule (whole days).
+  const wf = $("waterfall");
+  let drag = null;
+  wf.addEventListener("pointerdown", (e) => {
+    const bar = e.target.closest(".bar-task");
+    if (!bar || e.button !== 0) return;
+    const cell = bar.parentElement.getBoundingClientRect();
+    drag = { id: bar.dataset.id, bar, x: e.clientX, perDay: cell.width / ui.span, days: 0 };
+    bar.setPointerCapture(e.pointerId);
+  });
+  wf.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    drag.days = Math.round((e.clientX - drag.x) / drag.perDay);
+    drag.bar.style.transform = `translateX(${drag.days * drag.perDay}px)`;
+  });
+  const endDrag = () => {
+    if (!drag) return;
+    const { id, days } = drag;
+    drag = null;
+    if (days) { ui.justDragged = true; shiftTask(id, days); setTimeout(() => { ui.justDragged = false; }, 0); }
+    else renderBoard();
+  };
+  wf.addEventListener("pointerup", endDrag);
+  wf.addEventListener("pointercancel", endDrag);
+
+  // View tabs, timeline range, and chart unit.
+  document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => { ui.view = b.dataset.view; renderBoard(); }));
+  document.querySelectorAll("[data-span]").forEach((b) => b.addEventListener("click", () => { ui.span = Number(b.dataset.span); renderBoard(); }));
+  document.querySelectorAll("[data-unit]").forEach((b) => b.addEventListener("click", () => { ui.chartUnit = b.dataset.unit; renderInsights(); }));
 }
 
 function wireFilterEvents() {
@@ -915,6 +1208,41 @@ function wireFilterEvents() {
     $("fPriority").value = "";
     $("fAssignee").value = "";
     sync();
+  });
+
+  // Project progress rows filter the views (reuse the Project select).
+  $("projectProgress").addEventListener("click", (e) => {
+    const row = e.target.closest("[data-project]");
+    if (!row) return;
+    const select = $("fProject");
+    select.value = state.filters.project === row.dataset.project ? "" : row.dataset.project;
+    select.dispatchEvent(new Event("change"));
+  });
+}
+
+function wireChartEvents() {
+  // Chart read-out: mouse position or arrow keys pick a day.
+  const chart = $("chart");
+  const n = SPRINT.before + SPRINT.after;
+  const setDay = (i) => { if (i !== ui.hoverDay) { ui.hoverDay = i; renderChart(); } };
+  chart.addEventListener("mousemove", (e) => {
+    const svg = chart.querySelector("svg");
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const vx = ((e.clientX - rect.left) * 640) / rect.width;
+    setDay(Math.max(0, Math.min(n, Math.round(((vx - 44) / (640 - 44 - 16)) * n))));
+  });
+  chart.addEventListener("mouseleave", () => setDay(null));
+  chart.addEventListener("blur", () => setDay(null));
+  chart.addEventListener("keydown", (e) => {
+    const cur = ui.hoverDay === null ? SPRINT.before : ui.hoverDay;
+    if (e.key === "ArrowLeft") setDay(Math.max(0, cur - 1));
+    else if (e.key === "ArrowRight") setDay(Math.min(n, cur + 1));
+    else if (e.key === "Home") setDay(0);
+    else if (e.key === "End") setDay(n);
+    else if (e.key === "Escape") setDay(null);
+    else return;
+    e.preventDefault();
   });
 }
 
@@ -932,193 +1260,6 @@ function wireFormEvents() {
 }
 
 /* ======================================================================
-   INSIGHTS: progress bars and burndown chart (follow the unit toggle)
-   ====================================================================== */
-const unitLabel = () => (ui.chartUnit === "tasks" ? "tasks" : "pts");
-const weightOf = (task) => (ui.chartUnit === "tasks" ? 1 : task.points);
-const sumWeight = (tasks) => tasks.reduce((n, t) => n + weightOf(t), 0);
-const round1 = (n) => Math.round(n * 10) / 10;
-
-function formatShort(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: "numeric", month: "short" });
-}
-
-function filtersActive() {
-  const f = state.filters;
-  return Boolean(f.project || f.priority || f.assignee.trim());
-}
-
-// One row per day of the window: ideal line, and remaining work up to today.
-function burndownSeries(tasks) {
-  const days = [];
-  for (let i = -SPRINT.before; i <= SPRINT.after; i++) days.push(daysFromToday(i));
-  const today = todayString();
-  const startScope = sumWeight(tasks.filter((t) => t.createdAt <= days[0]));
-  return days.map((date, i) => {
-    const scope = sumWeight(tasks.filter((t) => t.createdAt <= date));
-    const done = sumWeight(tasks.filter((t) => t.completedAt && t.completedAt <= date));
-    return {
-      date,
-      scope,
-      ideal: startScope * (1 - i / (days.length - 1)),
-      remaining: date <= today ? scope - done : null
-    };
-  });
-}
-
-function renderChart() {
-  const series = burndownSeries(applyFilters(state.tasks));
-  const W = 640, H = 280, L = 44, R = 16, T = 16, B = 34;
-  const pw = W - L - R, ph = H - T - B, last = series.length - 1;
-  const maxVal = Math.max(1, ...series.map((p) => Math.max(p.ideal, p.remaining ?? 0)));
-  const step = [1, 2, 5, 10, 20, 50, 100].find((s) => maxVal / s <= 5) || 200;
-  const yMax = Math.ceil(maxVal / step) * step;
-  const x = (i) => L + (pw * i) / last;
-  const y = (v) => T + ph * (1 - v / yMax);
-  const todayIdx = SPRINT.before;
-
-  let svg = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Burndown chart in ${unitLabel()}">`;
-  for (let v = 0; v <= yMax; v += step) {
-    svg += `<line class="${v === 0 ? "axis" : "grid"}" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
-    svg += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
-  }
-  [0, 7, 14, 21, 28].filter((i) => i <= last).forEach((i) => {
-    svg += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle">${escapeHtml(formatShort(series[i].date))}</text>`;
-  });
-  svg += `<line class="today" x1="${x(todayIdx)}" x2="${x(todayIdx)}" y1="${T}" y2="${T + ph}"/>`;
-  svg += `<text class="today-label" x="${x(todayIdx) + 4}" y="${T + 10}">Today</text>`;
-  svg += `<polyline class="ideal" points="${series.map((p, i) => `${x(i)},${y(p.ideal)}`).join(" ")}"/>`;
-  svg += `<polyline class="actual" points="${series.filter((p) => p.remaining !== null).map((p) => `${x(series.indexOf(p))},${y(p.remaining)}`).join(" ")}"/>`;
-
-  // Hover / keyboard read-out for one day.
-  const h = ui.hoverDay;
-  if (h !== null) {
-    const p = series[h];
-    svg += `<line class="guide" x1="${x(h)}" x2="${x(h)}" y1="${T}" y2="${T + ph}"/>`;
-    svg += `<circle class="dot-ideal" cx="${x(h)}" cy="${y(p.ideal)}" r="5"/>`;
-    if (p.remaining !== null) svg += `<circle class="dot-actual" cx="${x(h)}" cy="${y(p.remaining)}" r="5"/>`;
-    const tipW = 140, tipH = 58;
-    const tipX = x(h) > W / 2 ? x(h) - tipW - 10 : x(h) + 10;
-    svg += `<rect class="tip" x="${tipX}" y="${T + 4}" width="${tipW}" height="${tipH}" rx="6"/>`;
-    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 22}" font-weight="700">${escapeHtml(formatShort(p.date))}</text>`;
-    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 38}">Ideal: ${round1(p.ideal)} ${unitLabel()}</text>`;
-    svg += `<text class="tip-text" x="${tipX + 10}" y="${T + 54}">${p.remaining === null ? "Actual: not yet" : `Actual: ${p.remaining} ${unitLabel()}`}</text>`;
-  }
-  svg += `<rect class="hit" x="${L}" y="${T}" width="${pw}" height="${ph}" fill="transparent"/></svg>`;
-  $("chart").innerHTML = svg;
-
-  const now = series[todayIdx];
-  const diff = round1(now.ideal - now.remaining);
-  const verdict = diff >= 0 ? `${diff} ${unitLabel()} ahead of the ideal line` : `${-diff} ${unitLabel()} behind the ideal line`;
-  $("chartNote").textContent = `Today: ${now.remaining} ${unitLabel()} remaining of ${now.scope} in scope, ${verdict}.` +
-    (filtersActive() ? " The chart follows the active filters." : "");
-}
-
-function renderProgress() {
-  const all = state.tasks;
-  const total = sumWeight(all);
-  const byStatus = STATUSES.map((s) => sumWeight(all.filter((t) => t.status === s.name)));
-  const done = byStatus[STATUSES.length - 1];
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  const segments = byStatus.map((v, i) => `<span class="seg-${i}" style="width:${total ? (v / total) * 100 : 0}%" title="${escapeHtml(STATUSES[i].name)}: ${v} ${unitLabel()}"></span>`).join("");
-  const legend = STATUSES.map((s, i) => `<li><span class="swatch seg-${i}"></span>${escapeHtml(s.name)} ${byStatus[i]}</li>`).join("");
-  $("overall").innerHTML = `
-    <div class="overall-head"><strong>${pct}%</strong><span>complete &middot; ${done} of ${total} ${unitLabel()} done</span></div>
-    <div class="bar" role="progressbar" aria-label="Overall completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${segments}</div>
-    <ul class="legend">${legend}</ul>`;
-
-  $("projectProgress").innerHTML = PROJECTS.map((p) => {
-    const tasks = all.filter((t) => t.project === p);
-    const t = sumWeight(tasks);
-    const d = sumWeight(tasks.filter((x) => x.status === "Done"));
-    const pr = t ? Math.round((d / t) * 100) : 0;
-    const active = state.filters.project === p;
-    return `<button type="button" class="proj-row" data-project="${escapeHtml(p)}" aria-pressed="${active}">
-      <span class="proj-name">${escapeHtml(p)}</span>
-      <span class="proj-val">${d}/${t} ${unitLabel()} &middot; ${pr}%</span>
-      <span class="bar"><span class="fill" style="width:${pr}%"></span></span>
-    </button>`;
-  }).join("");
-}
-
-function renderInsights() {
-  document.querySelectorAll("[data-unit]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.unit === ui.chartUnit)));
-  renderProgress();
-  renderChart();
-}
-
-/* ======================================================================
-   TASK DETAILS (opened from a card)
-   ====================================================================== */
-function openDetails(id) {
-  const t = state.tasks.find((x) => x.id === id);
-  if (!t) return;
-  $("detailTitle").textContent = `${t.id}: ${t.title}`;
-  const rows = [
-    ["Project", t.project], ["Category", t.category], ["Assignee", t.assignee], ["Priority", t.priority],
-    ["Status", t.status], ["Effort", `${t.points} pts`],
-    ["Due", formatDate(t.dueDate) + (isOverdue(t) ? " (overdue)" : "")],
-    ["Created", formatDate(t.createdAt)], ["Completed", t.completedAt ? formatDate(t.completedAt) : "Not yet"]
-  ];
-  $("detailBody").innerHTML =
-    `<p class="detail-desc">${t.description ? escapeHtml(t.description) : "<em>No description.</em>"}</p>` +
-    `<dl class="detail-grid">${rows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join("")}</dl>`;
-  $("detailDialog").showModal();
-}
-
-function wireInsightEvents() {
-  // Points / Tasks toggle.
-  document.querySelectorAll("[data-unit]").forEach((b) => b.addEventListener("click", () => {
-    ui.chartUnit = b.dataset.unit;
-    renderInsights();
-  }));
-
-  // Project bars filter the board (reuses the Project filter control).
-  $("projectProgress").addEventListener("click", (e) => {
-    const row = e.target.closest("[data-project]");
-    if (!row) return;
-    const select = $("fProject");
-    select.value = state.filters.project === row.dataset.project ? "" : row.dataset.project;
-    select.dispatchEvent(new Event("change"));
-  });
-
-  // Chart read-out: mouse position or arrow keys pick a day.
-  const chart = $("chart");
-  const setDay = (i) => {
-    if (i !== ui.hoverDay) { ui.hoverDay = i; renderChart(); }
-  };
-  chart.addEventListener("mousemove", (e) => {
-    const svg = chart.querySelector("svg");
-    if (!svg) return;
-    const rect = svg.getBoundingClientRect();
-    const vx = ((e.clientX - rect.left) * 640) / rect.width;
-    const n = SPRINT.before + SPRINT.after;
-    setDay(Math.max(0, Math.min(n, Math.round(((vx - 44) / (640 - 44 - 16)) * n))));
-  });
-  chart.addEventListener("mouseleave", () => setDay(null));
-  chart.addEventListener("keydown", (e) => {
-    const n = SPRINT.before + SPRINT.after;
-    const cur = ui.hoverDay === null ? SPRINT.before : ui.hoverDay;
-    if (e.key === "ArrowLeft") setDay(Math.max(0, cur - 1));
-    else if (e.key === "ArrowRight") setDay(Math.min(n, cur + 1));
-    else if (e.key === "Home") setDay(0);
-    else if (e.key === "End") setDay(n);
-    else if (e.key === "Escape") setDay(null);
-    else return;
-    e.preventDefault();
-  });
-  chart.addEventListener("blur", () => setDay(null));
-
-  // Card titles are keyboard-operable buttons.
-  $("board").addEventListener("keydown", (e) => {
-    const el = e.target.closest('[data-action="details"]');
-    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openDetails(el.dataset.id); }
-  });
-  $("closeDetail").addEventListener("click", () => $("detailDialog").close());
-}
-
-/* ======================================================================
    INIT
    ====================================================================== */
 function init() {
@@ -1129,10 +1270,11 @@ function init() {
   resetForm();
   seedTasks();
   renderBoard();
-  wireBoardEvents();
+  wireViewEvents();
   wireFilterEvents();
+  wireChartEvents();
+  wireDetailEvents();
   wireFormEvents();
-  wireInsightEvents();
 }
 
 init();
