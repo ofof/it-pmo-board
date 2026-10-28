@@ -12,6 +12,8 @@ A single-page Kanban board for a fictitious bank's internal IT PMO. It is a demo
 - Filters by project, assignee and priority, and a live summary strip.
 - Optional email notification for new tasks through [FormSubmit](https://formsubmit.co).
 
+Live demo: https://ofof.github.io/it-pmo-board/
+
 ## Run
 
 Open `index.html` in a browser. No server is needed.
